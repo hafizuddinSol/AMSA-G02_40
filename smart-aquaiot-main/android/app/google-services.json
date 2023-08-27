@@ -1,0 +1,76 @@
+{
+  "project_info": {
+    "project_number": "433426065602",
+    "project_id": "aquarium-management-system",
+    "storage_bucket": "aquarium-management-system.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:433426065602:android:14c1b759e0399b42c6735b",
+        "android_client_info": {
+          "package_name": "com.company.amsa"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "433426065602-15d4c86un0t7io043ecd2ohsnhuigpkp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC4SbT0kVDY5jdoeY1O-vjbKhLQflH1wHs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "433426065602-15d4c86un0t7io043ecd2ohsnhuigpkp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:433426065602:android:850ed63ab8453da7c6735b",
+        "android_client_info": {
+          "package_name": "com.project.amsa"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "433426065602-886fl412u17rkvfjla3sdqi9lo25clsv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.project.amsa",
+            "certificate_hash": "5349f5ca5ca501b15aecdcda1ce8a3131b73c74d"
+          }
+        },
+        {
+          "client_id": "433426065602-15d4c86un0t7io043ecd2ohsnhuigpkp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC4SbT0kVDY5jdoeY1O-vjbKhLQflH1wHs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "433426065602-15d4c86un0t7io043ecd2ohsnhuigpkp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
