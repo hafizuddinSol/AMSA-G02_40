@@ -9,4 +9,4 @@ flutter run
 Make sure to turn on USB Debugging on dev. setting to ensure flutter can detect your devices. 
 Internal virtualization (etc Android Studio) also supported in Android SDK 33.  
 
-- NH
+-- NH
