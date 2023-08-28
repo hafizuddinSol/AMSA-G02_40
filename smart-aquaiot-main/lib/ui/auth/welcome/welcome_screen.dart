@@ -35,7 +35,7 @@ class WelcomeScreen extends StatelessWidget {
                 children: <Widget>[
                   Center(
                     child: Image.asset(
-                      'assets/images/welcome_image.png',
+                      'assets/images/aquarium.png',
                       width: 150.0,
                       height: 150.0,
                       fit: BoxFit.cover,
