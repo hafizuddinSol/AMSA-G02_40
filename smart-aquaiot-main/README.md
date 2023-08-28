@@ -1,7 +1,7 @@
 # Smart-AquaManager
  Project-purposed for Software Development. Powered by **Flutter**, **Dart** and **Google Firebase**. 
  
-git clone https://github.com/NajmiHakim19/smart-aquaiot, 
+git clone https://github.com/hafizuddinSol/AMSA-G02_40, 
 cd smart-aquaiot-main, 
 flutter pub get, 
 flutter run
