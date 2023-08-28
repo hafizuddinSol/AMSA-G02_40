@@ -1,9 +1,9 @@
 # Smart-AquaManager
  Project-purposed for Software Development. Powered by **Flutter**, **Dart** and **Google Firebase**. 
  
-git clone https://github.com/NajmiHakim19/smart-aquaiot
-cd smart-aquaiot-main
-flutter pub get
+git clone https://github.com/NajmiHakim19/smart-aquaiot, 
+cd smart-aquaiot-main, 
+flutter pub get, 
 flutter run
 
 Make sure to turn on USB Debugging on dev. setting to ensure flutter can detect your devices. 
