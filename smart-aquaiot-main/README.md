@@ -1,8 +1,12 @@
 # Smart-AquaManager
- For git clone by back-end and leader. 
+ Project-purposed for Software Development. Powered by **Flutter**, **Dart** and **Google Firebase**. 
+ 
+git clone https://github.com/NajmiHakim19/smart-aquaiot
+cd smart-aquaiot-main
+flutter pub get
+flutter run
 
-Masuk directory korang, tempat korang simpan file. Bukak CMD kat situ lepastu tulis
-> git clone https://github.com/NajmiHakim19/smart-aquaiot
+Make sure to turn on USB Debugging on dev. setting to ensure flutter can detect your devices. 
+Internal virtualization (etc Android Studio) also supported in Android SDK 33.  
 
-Masuk VS Code/Android Studio, bukak folder yang korang dah git clone ni.
-Tulis kat terminal **flutter pub get** lepastu **flutter run**
+- NH
