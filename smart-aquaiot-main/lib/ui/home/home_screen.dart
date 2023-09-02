@@ -118,10 +118,6 @@ class _HomeState extends State<HomeScreen> {
                 padding: const EdgeInsets.all(8.0),
                 child: Text(user.email),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(user.userID),
-              ),
             ],
           ),
         ),
