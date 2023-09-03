@@ -7,6 +7,12 @@ import 'package:flutter_login_screen/model/user.dart';
 import 'package:flutter_login_screen/services/helper.dart';
 import 'package:flutter_login_screen/ui/auth/authentication_bloc.dart';
 import 'package:flutter_login_screen/ui/auth/welcome/welcome_screen.dart';
+import 'package:flutter_login_screen/ui/home/ph_level_page.dart';
+import 'edit_profile_page.dart';
+import 'temperature_page.dart'; // Import the temperature page file
+import 'water_level_page.dart'; // Import the water level page file
+import 'feed_now_page.dart'; // Import the feed now page file
+import 'display_feeding_time_page.dart'; // Import the display feeding time page file
 
 class HomeScreen extends StatefulWidget {
   final User user;
@@ -56,7 +62,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
-                        // Implement Edit Profile function
+                        // Navigate to Edit Profile Page
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => EditProfilePage()),
+                        );
                       },
                       style: ElevatedButton.styleFrom(
                         primary: Colors.purple,
@@ -108,36 +119,59 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      // Implement Temperature function
+                      // Navigate to Temperature Page
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => TemperaturePage()),
+                      );
                     },
                     child: Text('Temperature'),
                     style: ElevatedButton.styleFrom(primary: Colors.red),
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      // Implement Water level function
+                      // Navigate to Water Level Page
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => WaterLevelPage()),
+                      );
                     },
                     child: Text('Water level'),
                     style: ElevatedButton.styleFrom(primary: Colors.blue),
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      // Implement Feed now function
+                      // Navigate to Feed Now Page
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => FeedNowPage()),
+                      );
                     },
                     child: Text('Feed now'),
                     style: ElevatedButton.styleFrom(primary: Colors.orange),
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      // Implement Display feeding time function
+                      // Navigate to Display Feeding Time Page
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => DisplayFeedingTimePage()),
+                      );
                     },
                     child: Text('Display feeding time'),
                     style: ElevatedButton.styleFrom(primary: Colors.brown),
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      // Implement pH level function
-                    },
+                      // Navigate to pH Level Page
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => pHLevelPage()),
+                      );
+                    }, // Add a closing parenthesis here
                     child: Text('pH level'),
                     style: ElevatedButton.styleFrom(primary: Colors.green),
                   ),
