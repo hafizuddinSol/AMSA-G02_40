@@ -5,3 +5,5 @@ abstract class WelcomeEvent {}
 class LoginPressed extends WelcomeEvent {}
 
 class SignupPressed extends WelcomeEvent {}
+
+class AdminLoginRequested extends WelcomeEvent {}
