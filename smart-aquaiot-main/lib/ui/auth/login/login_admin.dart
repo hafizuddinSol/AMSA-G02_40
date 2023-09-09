@@ -6,6 +6,7 @@ import 'package:flutter_login_screen/ui/auth/authentication_bloc.dart';
 import 'package:flutter_login_screen/ui/auth/login/login_bloc.dart';
 import 'package:flutter_login_screen/ui/home/admin_homescreen.dart';
 import 'package:flutter_login_screen/ui/loading_cubit.dart';
+import 'package:flutter_login_screen/ui/auth/resetPasswordScreen/reset_password_screen.dart';
 import 'package:the_apple_sign_in/the_apple_sign_in.dart' as apple;
 
 class AdminLoginScreen extends StatefulWidget {
@@ -132,6 +133,31 @@ class _LoginScreen extends State<AdminLoginScreen> {
                                   hint: 'Password',
                                   darkMode: isDarkMode(context),
                                   errorColor: Theme.of(context).errorColor)),
+                        ),
+
+                        /// forgot password text, navigates user to ResetPasswordScreen
+                        /// and this is only visible when logging with email and password
+                        ConstrainedBox(
+                          constraints: const BoxConstraints(
+                              maxWidth: 720, minWidth: 200),
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 16, right: 24),
+                            child: Align(
+                              alignment: Alignment.centerRight,
+                              child: GestureDetector(
+                                onTap: () =>
+                                    push(context, const ResetPasswordScreen()),
+                                child: const Text(
+                                  'Forgot password?',
+                                  style: TextStyle(
+                                      color: Colors.lightBlue,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15,
+                                      letterSpacing: 1),
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
 
                         Padding(
