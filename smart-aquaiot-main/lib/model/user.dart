@@ -11,16 +11,13 @@ class User {
 
   String userID;
 
-  String profilePictureURL;
-
   String appIdentifier;
 
   User(
       {this.email = '',
       this.firstName = '',
       this.lastName = '',
-      this.userID = '',
-      this.profilePictureURL = ''})
+      this.userID = ''})
       : appIdentifier =
             'Flutter Login Screen ${kIsWeb ? 'Web' : Platform.operatingSystem}';
 
@@ -31,8 +28,7 @@ class User {
         email: parsedJson['email'] ?? '',
         firstName: parsedJson['firstName'] ?? '',
         lastName: parsedJson['lastName'] ?? '',
-        userID: parsedJson['id'] ?? parsedJson['userID'] ?? '',
-        profilePictureURL: parsedJson['profilePictureURL'] ?? '');
+        userID: parsedJson['id'] ?? parsedJson['userID'] ?? '');
   }
 
   Map<String, dynamic> toJson() {
@@ -41,7 +37,6 @@ class User {
       'firstName': firstName,
       'lastName': lastName,
       'id': userID,
-      'profilePictureURL': profilePictureURL,
       'appIdentifier': appIdentifier
     };
   }

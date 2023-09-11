@@ -152,11 +152,8 @@ class FireStoreUtils {
       auth.UserCredential result = await auth.FirebaseAuth.instance
           .createUserWithEmailAndPassword(
               email: emailAddress, password: password);
-      String profilePicUrl = '';
       if (imageData != null) {
         updateProgress('Uploading image, Please wait...');
-        profilePicUrl =
-            await uploadUserImageToServer(imageData, result.user?.uid ?? '');
       }
       User user = User(
           email: emailAddress,
@@ -224,10 +221,7 @@ class FireStoreUtils {
       return user;
     } else {
       /// create a new user from phone login
-      String profileImageUrl = '';
       if (imageData != null) {
-        profileImageUrl = await uploadUserImageToServer(
-            imageData, userCredential.user?.uid ?? '');
       }
       User user = User(
           firstName:
