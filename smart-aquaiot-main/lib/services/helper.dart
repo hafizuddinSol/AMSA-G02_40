@@ -27,7 +27,7 @@ String? validateMobile(String? value) {
 
 String? validatePassword(String? value) {
   if ((value?.length ?? 0) < 6) {
-    return 'Password must be more than 5 characters';
+    return 'Password must be more than 6 characters';
   } else {
     return null;
   }

@@ -114,7 +114,6 @@ class FireStoreUtils {
     }
 
     if (user != null) {
-      user.profilePictureURL = userData['picture']['data']['url'];
       user.firstName = firstName;
       user.lastName = lastName;
       user.email = userData['email'];
@@ -125,7 +124,6 @@ class FireStoreUtils {
           email: userData['email'] ?? '',
           firstName: firstName,
           lastName: lastName,
-          profilePictureURL: userData['picture']['data']['url'] ?? '',
           userID: authResult.user?.uid ?? '');
       String? errorMessage = await createNewUser(user);
       if (errorMessage == null) {
@@ -164,8 +162,7 @@ class FireStoreUtils {
           email: emailAddress,
           firstName: firstName,
           userID: result.user?.uid ?? '',
-          lastName: lastName,
-          profilePictureURL: profilePicUrl);
+          lastName: lastName);
       String? errorMessage = await createNewUser(user);
       if (errorMessage == null) {
         return user;
@@ -186,7 +183,7 @@ class FireStoreUtils {
           message = 'Email/password accounts are not enabled';
           break;
         case 'weak-password':
-          message = 'Password must be more than 5 characters';
+          message = 'Password must be more than 6 characters';
           break;
         case 'too-many-requests':
           message = 'Too many requests, Please try again later.';
@@ -237,7 +234,6 @@ class FireStoreUtils {
               firstName!.trim().isNotEmpty ? firstName.trim() : 'Anonymous',
           lastName: lastName!.trim().isNotEmpty ? lastName.trim() : 'User',
           email: '',
-          profilePictureURL: profileImageUrl,
           userID: userCredential.user?.uid ?? '');
       String? errorMessage = await createNewUser(user);
       if (errorMessage == null) {
@@ -284,7 +280,6 @@ class FireStoreUtils {
       user = User(
         email: appleIdCredential.email ?? '',
         firstName: appleIdCredential.fullName?.givenName ?? '',
-        profilePictureURL: '',
         userID: authResult.user?.uid ?? '',
         lastName: appleIdCredential.fullName?.familyName ?? '',
       );
