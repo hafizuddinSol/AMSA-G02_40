@@ -71,30 +71,17 @@ class _HomeScreenState extends State<HomeScreen> {
                       },
                       style: ElevatedButton.styleFrom(
                         primary: Colors.purple,
+                        elevation: 8, // Increase elevation
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.zero,
+                        ),
+                        padding: EdgeInsets.symmetric(
+                          vertical: 16.0, // Increase vertical padding
                         ),
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          user.profilePictureURL == ''
-                              ? CircleAvatar(
-                                  radius: 35,
-                                  backgroundColor: Colors.grey.shade400,
-                                  child: ClipOval(
-                                    child: SizedBox(
-                                      width: 70,
-                                      height: 70,
-                                      child: Image.asset(
-                                        'assets/images/placeholder.jpg',
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                  ),
-                                )
-                              : displayCircleImage(
-                                  user.profilePictureURL, 70, true),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(

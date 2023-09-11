@@ -9,10 +9,10 @@ import 'package:flutter_login_screen/ui/auth/authentication_bloc.dart';
 import 'package:flutter_login_screen/ui/auth/welcome/welcome_screen.dart';
 import 'package:flutter_login_screen/ui/home/ph_level_page.dart';
 import 'edit_profile_page.dart';
-import 'temperature_page.dart'; // Import the temperature page file
-import 'water_level_page.dart'; // Import the water level page file
-import 'feed_now_page.dart'; // Import the feed now page file
-import 'display_feeding_time_page.dart'; // Import the display feeding time page file
+import 'temperature_page.dart';
+import 'water_level_page.dart';
+import 'feed_now_page.dart';
+import 'display_feeding_time_page.dart';
 
 class AdminHomeScreen extends StatefulWidget {
   final User user;
@@ -56,13 +56,12 @@ class _HomeScreenState extends State<AdminHomeScreen> {
         body: Column(
           children: [
             SizedBox(
-              height: 160, // Set the height for the 'Edit Profile' button
+              height: 160,
               child: Row(
                 children: [
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
-                        // Navigate to Edit Profile Page
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -76,25 +75,8 @@ class _HomeScreenState extends State<AdminHomeScreen> {
                         ),
                       ),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          user.profilePictureURL == ''
-                              ? CircleAvatar(
-                                  radius: 35,
-                                  backgroundColor: Colors.grey.shade400,
-                                  child: ClipOval(
-                                    child: SizedBox(
-                                      width: 70,
-                                      height: 70,
-                                      child: Image.asset(
-                                        'assets/images/placeholder.jpg',
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                  ),
-                                )
-                              : displayCircleImage(
-                                  user.profilePictureURL, 70, true),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
@@ -111,15 +93,14 @@ class _HomeScreenState extends State<AdminHomeScreen> {
             ),
             Expanded(
               child: GridView.count(
-                crossAxisCount: 2, // 2 columns for symmetry
-                childAspectRatio: 1.0, // Square aspect ratio
+                crossAxisCount: 2,
+                childAspectRatio: 1.0,
                 padding: EdgeInsets.all(16.0),
                 mainAxisSpacing: 16.0,
                 crossAxisSpacing: 16.0,
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      // Navigate to Temperature Page
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -131,7 +112,6 @@ class _HomeScreenState extends State<AdminHomeScreen> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      // Navigate to Water Level Page
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -143,7 +123,6 @@ class _HomeScreenState extends State<AdminHomeScreen> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      // Navigate to Feed Now Page
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => FeedNowPage()),
@@ -154,7 +133,6 @@ class _HomeScreenState extends State<AdminHomeScreen> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      // Navigate to Display Feeding Time Page
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -166,18 +144,16 @@ class _HomeScreenState extends State<AdminHomeScreen> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      // Navigate to pH Level Page
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => pHLevelPage()),
                       );
-                    }, // Add a closing parenthesis here
+                    },
                     child: Text('pH level'),
                     style: ElevatedButton.styleFrom(primary: Colors.green),
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      // Implement Logout function
                       context.read<AuthenticationBloc>().add(LogoutEvent());
                     },
                     style: ElevatedButton.styleFrom(primary: Colors.purple),
