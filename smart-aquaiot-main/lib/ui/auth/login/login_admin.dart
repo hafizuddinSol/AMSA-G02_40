@@ -7,7 +7,6 @@ import 'package:flutter_login_screen/ui/auth/login/login_bloc.dart';
 import 'package:flutter_login_screen/ui/home/admin_homescreen.dart';
 import 'package:flutter_login_screen/ui/loading_cubit.dart';
 import 'package:flutter_login_screen/ui/auth/resetPasswordScreen/reset_password_screen.dart';
-import 'package:the_apple_sign_in/the_apple_sign_in.dart' as apple;
 
 class AdminLoginScreen extends StatefulWidget {
   const AdminLoginScreen({Key? key}) : super(key: key);
@@ -111,7 +110,7 @@ class _LoginScreen extends State<AdminLoginScreen> {
                               decoration: getInputDecoration(
                                   hint: 'Email Address',
                                   darkMode: isDarkMode(context),
-                                  errorColor: Theme.of(context).errorColor)),
+                                  errorColor: Theme.of(context).colorScheme.error)),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(
@@ -132,7 +131,7 @@ class _LoginScreen extends State<AdminLoginScreen> {
                               decoration: getInputDecoration(
                                   hint: 'Password',
                                   darkMode: isDarkMode(context),
-                                  errorColor: Theme.of(context).errorColor)),
+                                  errorColor: Theme.of(context).colorScheme.error)),
                         ),
 
                         /// forgot password text, navigates user to ResetPasswordScreen
