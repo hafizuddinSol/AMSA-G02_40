@@ -6,7 +6,20 @@ class LoginWithEmailAndPasswordEvent extends AuthenticationEvent {
   String email;
   String password;
 
-  LoginWithEmailAndPasswordEvent({required this.email, required this.password});
+  LoginWithEmailAndPasswordEvent({
+    required this.email,
+    required this.password,
+  });
+}
+
+class AdminLoginEvent extends AuthenticationEvent {
+  final String adminEmail;
+  final String adminPassword;
+
+  AdminLoginEvent({
+    required this.adminEmail,
+    required this.adminPassword,
+  });
 }
 
 class LoginWithFacebookEvent extends AuthenticationEvent {}
@@ -16,7 +29,8 @@ class LoginWithAppleEvent extends AuthenticationEvent {}
 class LoginWithPhoneNumberEvent extends AuthenticationEvent {
   auth.PhoneAuthCredential credential;
   String phoneNumber;
-  String? firstName, lastName;
+  String? firstName;
+  String? lastName;
   Uint8List? imageData;
 
   LoginWithPhoneNumberEvent({
@@ -35,17 +49,16 @@ class SignupWithEmailAndPasswordEvent extends AuthenticationEvent {
   String? firstName;
   String? lastName;
 
-  SignupWithEmailAndPasswordEvent(
-      {required this.emailAddress,
-      required this.password,
-      this.imageData,
-      this.firstName = 'Anonymous',
-      this.lastName = 'User'});
+  SignupWithEmailAndPasswordEvent({
+    required this.emailAddress,
+    required this.password,
+    this.imageData,
+    this.firstName,
+    this.lastName,
+  });
 }
 
-class LogoutEvent extends AuthenticationEvent {
-  LogoutEvent();
-}
+class LogoutEvent extends AuthenticationEvent {}
 
 class FinishedOnBoardingEvent extends AuthenticationEvent {}
 

@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:firebase_storage/firebase_storage.dart';
@@ -6,7 +8,6 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_login_screen/constants.dart';
 import 'package:flutter_login_screen/model/user.dart';
 import 'package:flutter_login_screen/services/helper.dart';
-import 'package:the_apple_sign_in/the_apple_sign_in.dart' as apple;
 
 class FireStoreUtils {
   static FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -20,6 +21,83 @@ class FireStoreUtils {
     } else {
       return null;
     }
+  }
+
+  static Future<bool> checkIfUserIsAdmin(String userId) async {
+    try {
+      DocumentSnapshot<Map<String, dynamic>> userDocument =
+          await firestore.collection(usersCollection).doc(userId).get();
+      if (userDocument.data() != null && userDocument.exists) {
+        // Assuming 'roles' is the field in Firestore that specifies the user's role
+        String userRole = userDocument.data()!['roles'] ?? '';
+        return userRole == 'admin';
+      }
+      return false; // User not found or error occurred
+    } catch (e) {
+      // Handle exceptions, e.g., Firestore errors
+      return false;
+    }
+  }
+
+  static Future<dynamic> adminLogin(String email, String password) async {
+    try {
+      auth.UserCredential result = await auth.FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password);
+      // Check if the user is an admin (you can determine this based on your Firebase user data)
+      bool isAdmin = await checkIfUserIsAdmin(result.user?.uid ?? '');
+
+      if (isAdmin) {
+        DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+            await firestore.collection(usersCollection).doc(result.user?.uid ?? '').get();
+
+        User? user;
+        if (documentSnapshot.exists) {
+          user = User.fromJson(documentSnapshot.data() ?? {});
+        }
+
+        return user;
+      } else {
+        return 'You do not have admin privileges.';
+      }
+    } on auth.FirebaseAuthException catch (exception, s) {
+      debugPrint('$exception$s');
+      switch ((exception).code) {
+        case 'invalid-email':
+          return 'Email address is malformed.';
+        case 'wrong-password':
+          return 'Wrong password.';
+        case 'user-not-found':
+          return 'No user corresponding to the given email address.';
+        case 'user-disabled':
+          return 'This user has been disabled.';
+        case 'too-many-requests':
+          return 'Too many attempts to sign in as this user.';
+      }
+      return 'Unexpected firebase error, Please try again.';
+    } catch (e, s) {
+      debugPrint('$e$s');
+      return 'Login failed, Please try again.';
+    }
+  }
+
+  static Future<String?> fetchUserRole(String userID) async {
+    try {
+      final DocumentSnapshot<Map<String, dynamic>> userDocument =
+          await FirebaseFirestore.instance.collection('users').doc(userID).get();
+
+      if (userDocument.exists) {
+        final userData = userDocument.data();
+        if (userData != null && userData.containsKey('roles')) {
+          // Return the user's role from Firestore
+          return userData['roles'];
+        }
+      }
+    } catch (e) {
+      print('Error fetching user role: $e');
+    }
+
+    // Return null if the role couldn't be fetched or there was an error
+    return null;
   }
 
   static Future<User> updateCurrentUser(User user) async {
@@ -57,7 +135,17 @@ class FireStoreUtils {
       User? user;
       if (documentSnapshot.exists) {
         user = User.fromJson(documentSnapshot.data() ?? {});
+
+        // Check the user's role here
+        if (user.roles == 'user') {
+          // The logged-in user is a regular user.
+          return user;
+        } else if (user.roles == 'admin') {
+          // The logged-in user is an admin.
+          return user;
+        }
       }
+      
       return user;
     } on auth.FirebaseAuthException catch (exception, s) {
       debugPrint('$exception$s');
@@ -124,7 +212,7 @@ class FireStoreUtils {
           email: userData['email'] ?? '',
           firstName: firstName,
           lastName: lastName,
-          userID: authResult.user?.uid ?? '');
+          userID: authResult.user?.uid ?? '', roles: '');
       String? errorMessage = await createNewUser(user);
       if (errorMessage == null) {
         return user;
@@ -159,7 +247,7 @@ class FireStoreUtils {
           email: emailAddress,
           firstName: firstName,
           userID: result.user?.uid ?? '',
-          lastName: lastName);
+          lastName: lastName, roles: '');
       String? errorMessage = await createNewUser(user);
       if (errorMessage == null) {
         return user;
@@ -228,60 +316,12 @@ class FireStoreUtils {
               firstName!.trim().isNotEmpty ? firstName.trim() : 'Anonymous',
           lastName: lastName!.trim().isNotEmpty ? lastName.trim() : 'User',
           email: '',
-          userID: userCredential.user?.uid ?? '');
+          userID: userCredential.user?.uid ?? '', roles: '');
       String? errorMessage = await createNewUser(user);
       if (errorMessage == null) {
         return user;
       } else {
         return 'Couldn\'t create new user with phone number.';
-      }
-    }
-  }
-
-  static loginWithApple() async {
-    final appleCredential = await apple.TheAppleSignIn.performRequests([
-      const apple.AppleIdRequest(
-          requestedScopes: [apple.Scope.email, apple.Scope.fullName])
-    ]);
-    if (appleCredential.error != null) {
-      return 'Couldn\'t login with apple.';
-    }
-
-    if (appleCredential.status == apple.AuthorizationStatus.authorized) {
-      final auth.AuthCredential credential =
-          auth.OAuthProvider('apple.com').credential(
-        accessToken: String.fromCharCodes(
-            appleCredential.credential?.authorizationCode ?? []),
-        idToken: String.fromCharCodes(
-            appleCredential.credential?.identityToken ?? []),
-      );
-      return await handleAppleLogin(credential, appleCredential.credential!);
-    } else {
-      return 'Couldn\'t login with apple.';
-    }
-  }
-
-  static handleAppleLogin(
-    auth.AuthCredential credential,
-    apple.AppleIdCredential appleIdCredential,
-  ) async {
-    auth.UserCredential authResult =
-        await auth.FirebaseAuth.instance.signInWithCredential(credential);
-    User? user = await getCurrentUser(authResult.user?.uid ?? '');
-    if (user != null) {
-      return user;
-    } else {
-      user = User(
-        email: appleIdCredential.email ?? '',
-        firstName: appleIdCredential.fullName?.givenName ?? '',
-        userID: authResult.user?.uid ?? '',
-        lastName: appleIdCredential.fullName?.familyName ?? '',
-      );
-      String? errorMessage = await createNewUser(user);
-      if (errorMessage == null) {
-        return user;
-      } else {
-        return errorMessage;
       }
     }
   }

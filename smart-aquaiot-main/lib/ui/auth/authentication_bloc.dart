@@ -29,20 +29,31 @@ class AuthenticationBloc
         if (user == null) {
           emit(const AuthenticationState.unauthenticated());
         } else {
-          emit(AuthenticationState.authenticated(user!));
+          // Fetch the user's role here
+          final userRole = await FireStoreUtils.fetchUserRole(user!.userID);
+          
+          // Handle null roles by setting a default role (e.g., "user")
+          final roles = userRole ?? 'user';
+
+          emit(AuthenticationState.authenticated(user!, roles));
         }
       }
     });
+
     on<FinishedOnBoardingEvent>((event, emit) async {
       await prefs.setBool(finishedOnBoardingConst, true);
       emit(const AuthenticationState.unauthenticated());
-    });
+    }); 
+
+    // Inside your AuthenticationBloc or authentication logic
     on<LoginWithEmailAndPasswordEvent>((event, emit) async {
       dynamic result = await FireStoreUtils.loginWithEmailAndPassword(
           event.email, event.password);
       if (result != null && result is User) {
-        user = result;
-        emit(AuthenticationState.authenticated(user!));
+        final user = result;
+        // Handle null roles by setting a default role (e.g., "user")
+        final roles = user.roles ?? 'user';
+        emit(AuthenticationState.authenticated(user, roles));
       } else if (result != null && result is String) {
         emit(AuthenticationState.unauthenticated(message: result));
       } else {
@@ -50,46 +61,7 @@ class AuthenticationBloc
             message: 'Login failed, Please try again.'));
       }
     });
-    on<LoginWithFacebookEvent>((event, emit) async {
-      dynamic result = await FireStoreUtils.loginWithFacebook();
-      if (result != null && result is User) {
-        user = result;
-        emit(AuthenticationState.authenticated(user!));
-      } else if (result != null && result is String) {
-        emit(AuthenticationState.unauthenticated(message: result));
-      } else {
-        emit(const AuthenticationState.unauthenticated(
-            message: 'Facebook login failed, Please try again.'));
-      }
-    });
-    on<LoginWithAppleEvent>((event, emit) async {
-      dynamic result = await FireStoreUtils.loginWithApple();
-      if (result != null && result is User) {
-        user = result;
-        emit(AuthenticationState.authenticated(user!));
-      } else if (result != null && result is String) {
-        emit(AuthenticationState.unauthenticated(message: result));
-      } else {
-        emit(const AuthenticationState.unauthenticated(
-            message: 'Apple login failed, Please try again.'));
-      }
-    });
 
-    on<LoginWithPhoneNumberEvent>((event, emit) async {
-      dynamic result =
-          await FireStoreUtils.loginOrCreateUserWithPhoneNumberCredential(
-              credential: event.credential,
-              phoneNumber: event.phoneNumber,
-              firstName: event.firstName,
-              lastName: event.lastName,
-              imageData: event.imageData);
-      if (result is User) {
-        user = result;
-        emit(AuthenticationState.authenticated(result));
-      } else if (result is String) {
-        emit(AuthenticationState.unauthenticated(message: result));
-      }
-    });
     on<SignupWithEmailAndPasswordEvent>((event, emit) async {
       dynamic result = await FireStoreUtils.signUpWithEmailAndPassword(
           emailAddress: event.emailAddress,
@@ -99,7 +71,8 @@ class AuthenticationBloc
           lastName: event.lastName);
       if (result != null && result is User) {
         user = result;
-        emit(AuthenticationState.authenticated(user!));
+        // Handle null roles by setting a default role (e.g., "user")
+        emit(AuthenticationState.authenticated(user!, 'user'));
       } else if (result != null && result is String) {
         emit(AuthenticationState.unauthenticated(message: result));
       } else {
@@ -107,6 +80,7 @@ class AuthenticationBloc
             message: 'Couldn\'t sign up'));
       }
     });
+
     on<LogoutEvent>((event, emit) async {
       await FireStoreUtils.logout();
       user = null;

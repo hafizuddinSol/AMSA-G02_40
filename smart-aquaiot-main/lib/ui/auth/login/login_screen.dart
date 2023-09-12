@@ -5,6 +5,7 @@ import 'package:flutter_login_screen/services/helper.dart';
 import 'package:flutter_login_screen/ui/auth/authentication_bloc.dart';
 import 'package:flutter_login_screen/ui/auth/login/login_bloc.dart';
 import 'package:flutter_login_screen/ui/auth/resetPasswordScreen/reset_password_screen.dart';
+import 'package:flutter_login_screen/ui/home/admin_homescreen.dart';
 import 'package:flutter_login_screen/ui/home/home_screen.dart';
 import 'package:flutter_login_screen/ui/loading_cubit.dart';
 import 'package:the_apple_sign_in/the_apple_sign_in.dart' as apple;
@@ -42,8 +43,13 @@ class _LoginScreen extends State<LoginScreen> {
                   await context.read<LoadingCubit>().hideLoading();
                   if (state.authState == AuthState.authenticated) {
                     if (!mounted) return;
-                    pushAndRemoveUntil(
-                        context, HomeScreen(user: state.user!), false);
+                    if (state.user!.roles == 'user') {
+                      Navigator.pushReplacement(
+                          context, MaterialPageRoute(builder: (_) => HomeScreen(user: state.user!)));
+                    } else if (state.user!.roles == 'admin') {
+                      Navigator.pushReplacement(
+                          context, MaterialPageRoute(builder: (_) => AdminHomeScreen(user: state.user!)));
+                    }
                   } else {
                     if (!mounted) return;
                     showSnackBar(context,
@@ -54,8 +60,9 @@ class _LoginScreen extends State<LoginScreen> {
               BlocListener<LoginBloc, LoginState>(
                 listener: (context, state) async {
                   if (state is ValidLoginFields) {
-                    await context.read<LoadingCubit>().showLoading(
-                        context, 'Logging in, Please wait...', false);
+                    await context
+                        .read<LoadingCubit>()
+                        .showLoading(context, 'Logging in, Please wait...', false);
                     if (!mounted) return;
                     context.read<AuthenticationBloc>().add(
                           LoginWithEmailAndPasswordEvent(
@@ -111,7 +118,7 @@ class _LoginScreen extends State<LoginScreen> {
                               decoration: getInputDecoration(
                                   hint: 'Email Address',
                                   darkMode: isDarkMode(context),
-                                  errorColor: Theme.of(context).errorColor)),
+                                  errorColor: Theme.of(context).colorScheme.error)),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(
@@ -132,11 +139,8 @@ class _LoginScreen extends State<LoginScreen> {
                               decoration: getInputDecoration(
                                   hint: 'Password',
                                   darkMode: isDarkMode(context),
-                                  errorColor: Theme.of(context).errorColor)),
+                                  errorColor: Theme.of(context).colorScheme.error)),
                         ),
-
-                        /// forgot password text, navigates user to ResetPasswordScreen
-                        /// and this is only visible when logging with email and password
                         ConstrainedBox(
                           constraints: const BoxConstraints(
                               maxWidth: 720, minWidth: 200),
@@ -159,7 +163,6 @@ class _LoginScreen extends State<LoginScreen> {
                             ),
                           ),
                         ),
-
                         Padding(
                           padding: const EdgeInsets.only(
                               right: 40.0, left: 40.0, top: 40),
