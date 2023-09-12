@@ -11,15 +11,14 @@ class User {
 
   String userID;
 
-  String appIdentifier;
+  String roles;
 
   User(
       {this.email = '',
       this.firstName = '',
       this.lastName = '',
-      this.userID = ''})
-      : appIdentifier =
-            'Flutter Login Screen ${kIsWeb ? 'Web' : Platform.operatingSystem}';
+      this.userID = '',
+      this.roles = 'user'});
 
   String fullName() => '$firstName $lastName';
 
@@ -37,7 +36,7 @@ class User {
       'firstName': firstName,
       'lastName': lastName,
       'id': userID,
-      'appIdentifier': appIdentifier
+      'roles': roles
     };
   }
 }
