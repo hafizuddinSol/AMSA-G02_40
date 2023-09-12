@@ -7,7 +7,6 @@ import 'package:flutter_login_screen/ui/auth/signUp/sign_up_screen.dart';
 import 'package:flutter_login_screen/ui/auth/welcome/welcome_bloc.dart';
 import 'package:flutter_login_screen/ui/auth/login/login_admin.dart';
 
-
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({Key? key}) : super(key: key);
 
@@ -115,40 +114,6 @@ class WelcomeScreen extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                             color: Color(colorPrimary)),
                       ),
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  // Added Text for Admin Login
-                  const Text(
-                    'If you are an admin, please login here',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Color.fromARGB(255, 255, 255, 255),
-                    ),
-                  ),
-                  // New Admin Login Button
-                  Padding(
-                    padding: const EdgeInsets.only(
-                        right: 40.0, left: 40.0, top: 10, bottom: 20),
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        fixedSize: Size.fromWidth(
-                            MediaQuery.of(context).size.width / 1.5),
-                        backgroundColor: const Color(colorPrimary),
-                        textStyle: const TextStyle(color: Colors.white),
-                        padding: const EdgeInsets.only(top: 16, bottom: 16),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(25.0),
-                            side: const BorderSide(color: Color(colorPrimary))),
-                      ),
-                      child: const Text(
-                        'Admin Login',
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-                      onPressed: () {
-                       context.read<WelcomeBloc>().add(AdminLoginRequested());
-                      },
                     ),
                   ),
                 ],
