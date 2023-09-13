@@ -20,16 +20,31 @@ class EditProfilePage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text('-- For debug purpose --'),
-                  Text('First Name: ${user!.firstName}'),
-                  Text('Email: ${state.user?.email}'),
-                  Text('Roles: ${state.user?.roles}'),
+                  Text(
+                    '-- For debug purpose --',
+                    style: TextStyle(fontSize: 18), // Adjust the font size
+                  ),
+                  Text(
+                    'First Name: ${user!.firstName}',
+                    style: TextStyle(fontSize: 20), // Adjust the font size
+                  ),
+                  Text(
+                    'Email: ${state.user?.email}',
+                    style: TextStyle(fontSize: 20), // Adjust the font size
+                  ),
+                  Text(
+                    'Role: ${state.user?.roles}',
+                    style: TextStyle(fontSize: 20), // Adjust the font size
+                  ),
                   // Add your profile editing widgets here
                 ],
               );
             } else {
               // Handle the case where the user is not authenticated
-              return Text('Please log in to edit your profile.');
+              return Text(
+                'Please log in to edit your profile.',
+                style: TextStyle(fontSize: 18), // Adjust the font size
+              );
             }
           },
         ),
