@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_login_screen/ui/auth/authentication_bloc.dart';
-import 'package:cloud_firestore/cloud_firestore.dart'; // Import Firestore
-import 'package:flutter_login_screen/model/user.dart' as LocalUser; // Import your User model with an 'as' prefix
-import 'package:firebase_auth/firebase_auth.dart'; // Import FirebaseAuth
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_login_screen/model/user.dart' as LocalUser;
+import 'package:firebase_auth/firebase_auth.dart';
 
 class EditProfilePage extends StatelessWidget {
   @override
@@ -16,9 +16,8 @@ class EditProfilePage extends StatelessWidget {
         child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
           builder: (context, state) {
             if (state.authState == AuthState.authenticated) {
-              final user = state.user; // Get the current user from the state
+              final user = state.user;
 
-              // Display user details
               return StreamBuilder<LocalUser.User>(
                 stream: _getUserDetails(user!.userID),
                 builder: (context, snapshot) {
@@ -71,7 +70,6 @@ class EditProfilePage extends StatelessWidget {
                             'email',
                             user.userID,
                           ),
-                          // Add additional rows for other user attributes
                           _buildPasswordRow(context),
                         ],
                       ),
@@ -82,7 +80,6 @@ class EditProfilePage extends StatelessWidget {
                 },
               );
             } else {
-              // Handle the case where the user is not authenticated
               return Text(
                 'Please log in to edit your profile.',
                 style: TextStyle(fontSize: 18),
@@ -94,7 +91,6 @@ class EditProfilePage extends StatelessWidget {
     );
   }
 
-  // Function to get user details from Firestore
   Stream<LocalUser.User> _getUserDetails(String userID) {
     final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -112,7 +108,6 @@ class EditProfilePage extends StatelessWidget {
     });
   }
 
-  // Function to build a DataRow with edit button
   DataRow _buildDataRow(
     BuildContext context,
     String attribute,
@@ -134,7 +129,6 @@ class EditProfilePage extends StatelessWidget {
     );
   }
 
-  // Function to build DataRow for changing the password
   DataRow _buildPasswordRow(BuildContext context) {
     return DataRow(
       cells: [
@@ -150,7 +144,6 @@ class EditProfilePage extends StatelessWidget {
     );
   }
 
-  // Function to edit a field
   void _editField(
     BuildContext context,
     String fieldName,
@@ -172,7 +165,12 @@ class EditProfilePage extends StatelessWidget {
             ElevatedButton(
               child: Text('Save'),
               onPressed: () {
-                onSave(context, _textController.text, field, userID);
+                final newValue = _textController.text;
+                if (field == 'email' && newValue != currentValue) {
+                  _updateEmail(context, newValue, userID);
+                } else {
+                  onSave(context, newValue, field, userID);
+                }
               },
             ),
             TextButton(
@@ -187,7 +185,6 @@ class EditProfilePage extends StatelessWidget {
     );
   }
 
-  // Function to change the password
   void _changePassword(BuildContext context) {
     showDialog(
       context: context,
@@ -197,14 +194,13 @@ class EditProfilePage extends StatelessWidget {
           title: Text('Change Password'),
           content: TextFormField(
             controller: _passwordController,
-            obscureText: true, // Password should be hidden
+            obscureText: true,
             decoration: InputDecoration(labelText: 'New Password'),
           ),
           actions: <Widget>[
             ElevatedButton(
               child: Text('Save'),
               onPressed: () {
-                // Update the user's password
                 final newPassword = _passwordController.text;
                 if (newPassword.isNotEmpty) {
                   _updatePassword(context, newPassword);
@@ -227,7 +223,6 @@ class EditProfilePage extends StatelessWidget {
     );
   }
 
-  // Function to update user details
   void onSave(
     BuildContext context,
     String newValue,
@@ -242,7 +237,7 @@ class EditProfilePage extends StatelessWidget {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Profile updated successfully')),
       );
-      Navigator.of(context).pop(); // Close the dialog
+      Navigator.of(context).pop();
     }).catchError((error) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error updating profile: $error')),
@@ -250,7 +245,33 @@ class EditProfilePage extends StatelessWidget {
     });
   }
 
-  // Function to update the user's password
+  void _updateEmail(BuildContext context, String newEmail, String userID) {
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+    final firebaseUser = _auth.currentUser;
+    if (firebaseUser != null) {
+      firebaseUser.updateEmail(newEmail).then((_) {
+        _firestore.collection('users').doc(userID).update({
+          'email': newEmail,
+        }).then((_) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Email updated successfully')),
+          );
+          Navigator.of(context).pop();
+        }).catchError((error) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error updating email: $error')),
+          );
+        });
+      }).catchError((error) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error updating email: $error')),
+        );
+      });
+    }
+  }
+
   void _updatePassword(BuildContext context, String newPassword) {
     final User? firebaseUser = FirebaseAuth.instance.currentUser;
 
@@ -259,7 +280,7 @@ class EditProfilePage extends StatelessWidget {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Password updated successfully')),
         );
-        Navigator.of(context).pop(); // Close the dialog
+        Navigator.of(context).pop();
       }).catchError((error) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error updating password: $error')),
