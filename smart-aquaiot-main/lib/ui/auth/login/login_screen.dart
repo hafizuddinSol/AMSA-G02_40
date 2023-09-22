@@ -5,10 +5,12 @@ import 'package:flutter_login_screen/services/helper.dart';
 import 'package:flutter_login_screen/ui/auth/authentication_bloc.dart';
 import 'package:flutter_login_screen/ui/auth/login/login_bloc.dart';
 import 'package:flutter_login_screen/ui/auth/resetPasswordScreen/reset_password_screen.dart';
+import 'package:flutter_login_screen/ui/auth/signUp/verifyemail_check.dart';
 import 'package:flutter_login_screen/ui/home/admin_homescreen.dart';
 import 'package:flutter_login_screen/ui/home/home_screen.dart';
 import 'package:flutter_login_screen/ui/loading_cubit.dart';
-import 'package:the_apple_sign_in/the_apple_sign_in.dart' as apple;
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -23,6 +25,13 @@ class _LoginScreen extends State<LoginScreen> {
   final GlobalKey<FormState> _key = GlobalKey();
   AutovalidateMode _validate = AutovalidateMode.disabled;
   String? email, password;
+
+  Future<bool> checkEmailVerificationStatus(String userId) async {
+    final userRef = FirebaseFirestore.instance.collection('users').doc(userId);
+    final userData = await userRef.get();
+    final verifyEmailStatus = userData['verifyemailstatus'];
+    return verifyEmailStatus == 'true';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,17 +52,41 @@ class _LoginScreen extends State<LoginScreen> {
                   await context.read<LoadingCubit>().hideLoading();
                   if (state.authState == AuthState.authenticated) {
                     if (!mounted) return;
-                    if (state.user!.roles == 'user') {
+
+                    final isEmailVerified =
+                        await checkEmailVerificationStatus(state.user!.userID);
+
+                    if (isEmailVerified) {
+                      if (state.user!.roles == 'user') {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => HomeScreen(user: state.user!),
+                          ),
+                        );
+                      } else if (state.user!.roles == 'admin') {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => AdminHomeScreen(user: state.user!),
+                          ),
+                        );
+                      }
+                    } else {
+                      // Email is not verified, navigate to verify email screen
                       Navigator.pushReplacement(
-                          context, MaterialPageRoute(builder: (_) => HomeScreen(user: state.user!)));
-                    } else if (state.user!.roles == 'admin') {
-                      Navigator.pushReplacement(
-                          context, MaterialPageRoute(builder: (_) => AdminHomeScreen(user: state.user!)));
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => VerifyEmailCheckScreen(),
+                        ),
+                      );
                     }
                   } else {
                     if (!mounted) return;
-                    showSnackBar(context,
-                        state.message ?? 'Couldn\'t login, Please try again.');
+                    showSnackBar(
+                      context,
+                      state.message ?? 'Couldn\'t login, Please try again.',
+                    );
                   }
                 },
               ),
@@ -64,12 +97,13 @@ class _LoginScreen extends State<LoginScreen> {
                         .read<LoadingCubit>()
                         .showLoading(context, 'Logging in, Please wait...', false);
                     if (!mounted) return;
+
                     context.read<AuthenticationBloc>().add(
-                          LoginWithEmailAndPasswordEvent(
-                            email: email!,
-                            password: password!,
-                          ),
-                        );
+                      LoginWithEmailAndPasswordEvent(
+                        email: email!,
+                        password: password!,
+                      ),
+                    );
                   }
                 },
               ),
@@ -191,47 +225,6 @@ class _LoginScreen extends State<LoginScreen> {
                                 .read<LoginBloc>()
                                 .add(ValidateLoginFieldsEvent(_key)),
                           ),
-                        ),
-                        FutureBuilder<bool>(
-                          future: apple.TheAppleSignIn.isAvailable(),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return const CircularProgressIndicator.adaptive();
-                            }
-                            if (!snapshot.hasData || (snapshot.data != true)) {
-                              return Container();
-                            } else {
-                              return Padding(
-                                padding: const EdgeInsets.only(
-                                    right: 40.0, left: 40.0, bottom: 20),
-                                child: ConstrainedBox(
-                                  constraints: BoxConstraints(
-                                      maxWidth:
-                                          MediaQuery.of(context).size.width /
-                                              1.5),
-                                  child: apple.AppleSignInButton(
-                                      cornerRadius: 25.0,
-                                      type: apple.ButtonType.signIn,
-                                      style: isDarkMode(context)
-                                          ? apple.ButtonStyle.white
-                                          : apple.ButtonStyle.black,
-                                      onPressed: () async {
-                                        await context
-                                            .read<LoadingCubit>()
-                                            .showLoading(
-                                                context,
-                                                'Logging in, Please wait...',
-                                                false);
-                                        if (!mounted) return;
-                                        context
-                                            .read<AuthenticationBloc>()
-                                            .add(LoginWithAppleEvent());
-                                      }),
-                                ),
-                              );
-                            }
-                          },
                         ),
                       ],
                     ),

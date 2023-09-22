@@ -251,6 +251,7 @@ class FireStoreUtils {
       userID: result.user?.uid ?? '',
       lastName: lastName,
       roles: 'user', // Set the user's role here
+      verifyemailstatus: 'false',
     );
 
     // Create a new user document in Firestore

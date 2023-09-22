@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:io';
+// ignore: unnecessary_import
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter_login_screen/services/helper.dart';
 import 'package:flutter_login_screen/ui/auth/authentication_bloc.dart';
 import 'package:flutter_login_screen/ui/auth/signUp/sign_up_bloc.dart';
+import 'package:flutter_login_screen/ui/auth/signUp/verifyemail_check.dart';
 import 'package:flutter_login_screen/ui/home/home_screen.dart';
 import 'package:flutter_login_screen/ui/loading_cubit.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -51,12 +53,10 @@ class _SignUpState extends State<SignUpScreen> {
                           'Verification email sent to ${user.email}. '
                           'Please verify your email before logging in.');
                     }
-                    // Navigate to HomeScreen or the appropriate screen
-                    pushAndRemoveUntil(
-                      context,
-                      HomeScreen(user: state.user!),
-                      false,
-                    );
+                    // Navigate to VerifyEmailCheckScreen
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (context) => VerifyEmailCheckScreen(),
+                    ));
                   } else {
                     showSnackBar(
                         context,
