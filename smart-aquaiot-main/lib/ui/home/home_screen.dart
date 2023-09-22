@@ -1,18 +1,16 @@
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_login_screen/constants.dart';
 import 'package:flutter_login_screen/model/user.dart';
 import 'package:flutter_login_screen/services/helper.dart';
 import 'package:flutter_login_screen/ui/auth/authentication_bloc.dart';
 import 'package:flutter_login_screen/ui/auth/welcome/welcome_screen.dart';
 import 'package:flutter_login_screen/ui/home/ph_level_page.dart';
 import 'edit_profile_page.dart';
-import 'temperature_page.dart'; // Import the temperature page file
-import 'water_level_page.dart'; // Import the water level page file
-import 'feed_now_page.dart'; // Import the feed now page file
-import 'display_feeding_time_page.dart'; // Import the display feeding time page file
+import 'temperature_page.dart'; 
+import 'water_level_page.dart'; 
+import 'feed_now_page.dart'; 
+import 'display_feeding_time_page.dart';
 
 class HomeScreen extends StatefulWidget {
   final User user;
@@ -26,7 +24,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-    final user = widget.user;
 
     return BlocListener<AuthenticationBloc, AuthenticationState>(
       listener: (context, state) {

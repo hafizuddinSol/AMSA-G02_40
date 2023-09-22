@@ -13,6 +13,7 @@ class User {
     required this.roles, // Make roles a required parameter
   });
 
+
   String fullName() => '$firstName $lastName';
 
   factory User.fromJson(Map<String, dynamic> parsedJson) {

@@ -1,8 +1,5 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_login_screen/constants.dart';
 import 'package:flutter_login_screen/model/user.dart';
 import 'package:flutter_login_screen/services/helper.dart';
 import 'package:flutter_login_screen/ui/auth/authentication_bloc.dart';
@@ -20,14 +17,13 @@ class AdminHomeScreen extends StatefulWidget {
   const AdminHomeScreen({Key? key, required this.user}) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<AdminHomeScreen> {
   @override
   Widget build(BuildContext context) {
-    final user = widget.user;
-
     return BlocListener<AuthenticationBloc, AuthenticationState>(
       listener: (context, state) {
         if (state.authState == AuthState.unauthenticated) {
@@ -69,16 +65,16 @@ class _HomeScreenState extends State<AdminHomeScreen> {
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.purple,
-                        shape: RoundedRectangleBorder(
+                        backgroundColor: Colors.purple,
+                        shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.zero,
                         ),
                       ),
-                      child: Row(
+                      child: const Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: EdgeInsets.all(8.0),
                             child: Text(
                               'Edit Profile',
                               style: TextStyle(color: Colors.white),
@@ -92,12 +88,8 @@ class _HomeScreenState extends State<AdminHomeScreen> {
               ),
             ),
             Expanded(
-              child: GridView.count(
-                crossAxisCount: 2,
-                childAspectRatio: 1.0,
-                padding: EdgeInsets.all(16.0),
-                mainAxisSpacing: 16.0,
-                crossAxisSpacing: 16.0,
+              child: ListView(
+                padding: const EdgeInsets.all(16.0),
                 children: [
                   ElevatedButton(
                     onPressed: () {
@@ -107,8 +99,8 @@ class _HomeScreenState extends State<AdminHomeScreen> {
                             builder: (context) => TemperaturePage()),
                       );
                     },
-                    child: Text('Temperature'),
-                    style: ElevatedButton.styleFrom(primary: Colors.red),
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                    child: const Text('Temperature'),
                   ),
                   ElevatedButton(
                     onPressed: () {
@@ -118,8 +110,8 @@ class _HomeScreenState extends State<AdminHomeScreen> {
                             builder: (context) => WaterLevelPage()),
                       );
                     },
-                    child: Text('Water level'),
-                    style: ElevatedButton.styleFrom(primary: Colors.blue),
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
+                    child: const Text('Water level'),
                   ),
                   ElevatedButton(
                     onPressed: () {

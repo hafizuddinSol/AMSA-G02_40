@@ -52,7 +52,7 @@ class AuthenticationBloc
       if (result != null && result is User) {
         final user = result;
         // Handle null roles by setting a default role (e.g., "user")
-        final roles = user.roles ?? 'user';
+        final roles = user.roles;
         emit(AuthenticationState.authenticated(user, roles));
       } else if (result != null && result is String) {
         emit(AuthenticationState.unauthenticated(message: result));

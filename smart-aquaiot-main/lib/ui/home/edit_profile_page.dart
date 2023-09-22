@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_login_screen/ui/auth/authentication_bloc.dart'; // Import your authentication bloc
+import 'package:flutter_login_screen/ui/auth/authentication_bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart'; // Import Firestore
+import 'package:flutter_login_screen/model/user.dart' as LocalUser; // Import your User model with an 'as' prefix
+import 'package:firebase_auth/firebase_auth.dart'; // Import FirebaseAuth
 
 class EditProfilePage extends StatelessWidget {
   @override
@@ -16,39 +19,252 @@ class EditProfilePage extends StatelessWidget {
               final user = state.user; // Get the current user from the state
 
               // Display user details
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    '-- For debug purpose --',
-                    style: TextStyle(fontSize: 18), // Adjust the font size
-                  ),
-                  Text(
-                    'First Name: ${user!.firstName}',
-                    style: TextStyle(fontSize: 20), // Adjust the font size
-                  ),
-                  Text(
-                    'Email: ${state.user?.email}',
-                    style: TextStyle(fontSize: 20), // Adjust the font size
-                  ),
-                  Text(
-                    'Role: ${state.user?.roles}',
-                    style: TextStyle(fontSize: 20), // Adjust the font size
-                  ),
-                  // Add your profile editing widgets here
-                ],
+              return StreamBuilder<LocalUser.User>(
+                stream: _getUserDetails(user!.userID),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  }
+
+                  if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  }
+
+                  final userDetails = snapshot.data;
+
+                  if (userDetails != null) {
+                    return SingleChildScrollView(
+                      child: DataTable(
+                        columns: [
+                          DataColumn(
+                            label: Text('Attribute'),
+                            numeric: false,
+                          ),
+                          DataColumn(
+                            label: Text('Value'),
+                            numeric: false,
+                          ),
+                          DataColumn(
+                            label: Text(''),
+                            numeric: false,
+                          ),
+                        ],
+                        rows: [
+                          _buildDataRow(
+                            context,
+                            'First Name',
+                            userDetails.firstName,
+                            'firstName',
+                            user.userID,
+                          ),
+                          _buildDataRow(
+                            context,
+                            'Last Name',
+                            userDetails.lastName,
+                            'lastName',
+                            user.userID,
+                          ),
+                          _buildDataRow(
+                            context,
+                            'Email',
+                            userDetails.email,
+                            'email',
+                            user.userID,
+                          ),
+                          // Add additional rows for other user attributes
+                          _buildPasswordRow(context),
+                        ],
+                      ),
+                    );
+                  } else {
+                    return Text('User details not found.');
+                  }
+                },
               );
             } else {
               // Handle the case where the user is not authenticated
               return Text(
                 'Please log in to edit your profile.',
-                style: TextStyle(fontSize: 18), // Adjust the font size
+                style: TextStyle(fontSize: 18),
               );
             }
           },
         ),
       ),
     );
+  }
+
+  // Function to get user details from Firestore
+  Stream<LocalUser.User> _getUserDetails(String userID) {
+    final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+    return _firestore.collection('users').doc(userID).snapshots().map((snapshot) {
+      final data = snapshot.data() as Map<String, dynamic>;
+
+      return LocalUser.User(
+        firstName: data['firstName'],
+        lastName: data['lastName'],
+        email: data['email'],
+        userID: '', // Replace with the appropriate value
+        roles: '', // Replace with the appropriate value
+        // Add other fields here
+      );
+    });
+  }
+
+  // Function to build a DataRow with edit button
+  DataRow _buildDataRow(
+    BuildContext context,
+    String attribute,
+    String value,
+    String field,
+    String userID,
+  ) {
+    return DataRow(
+      cells: [
+        DataCell(Text(attribute)),
+        DataCell(Text(value)),
+        DataCell(IconButton(
+          icon: Icon(Icons.edit),
+          onPressed: () {
+            _editField(context, attribute, value, field, userID);
+          },
+        )),
+      ],
+    );
+  }
+
+  // Function to build DataRow for changing the password
+  DataRow _buildPasswordRow(BuildContext context) {
+    return DataRow(
+      cells: [
+        DataCell(Text('Password')),
+        DataCell(Text('*********')),
+        DataCell(IconButton(
+          icon: Icon(Icons.edit),
+          onPressed: () {
+            _changePassword(context);
+          },
+        )),
+      ],
+    );
+  }
+
+  // Function to edit a field
+  void _editField(
+    BuildContext context,
+    String fieldName,
+    String currentValue,
+    String field,
+    String userID,
+  ) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        final _textController = TextEditingController(text: currentValue);
+        return AlertDialog(
+          title: Text('Edit $fieldName'),
+          content: TextFormField(
+            controller: _textController,
+            decoration: InputDecoration(labelText: 'New $fieldName'),
+          ),
+          actions: <Widget>[
+            ElevatedButton(
+              child: Text('Save'),
+              onPressed: () {
+                onSave(context, _textController.text, field, userID);
+              },
+            ),
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // Function to change the password
+  void _changePassword(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        final _passwordController = TextEditingController();
+        return AlertDialog(
+          title: Text('Change Password'),
+          content: TextFormField(
+            controller: _passwordController,
+            obscureText: true, // Password should be hidden
+            decoration: InputDecoration(labelText: 'New Password'),
+          ),
+          actions: <Widget>[
+            ElevatedButton(
+              child: Text('Save'),
+              onPressed: () {
+                // Update the user's password
+                final newPassword = _passwordController.text;
+                if (newPassword.isNotEmpty) {
+                  _updatePassword(context, newPassword);
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Password cannot be empty')),
+                  );
+                }
+              },
+            ),
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // Function to update user details
+  void onSave(
+    BuildContext context,
+    String newValue,
+    String field,
+    String userID,
+  ) {
+    final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+    _firestore.collection('users').doc(userID).update({
+      field: newValue,
+    }).then((_) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Profile updated successfully')),
+      );
+      Navigator.of(context).pop(); // Close the dialog
+    }).catchError((error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error updating profile: $error')),
+      );
+    });
+  }
+
+  // Function to update the user's password
+  void _updatePassword(BuildContext context, String newPassword) {
+    final User? firebaseUser = FirebaseAuth.instance.currentUser;
+
+    if (firebaseUser != null) {
+      firebaseUser.updatePassword(newPassword).then((_) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Password updated successfully')),
+        );
+        Navigator.of(context).pop(); // Close the dialog
+      }).catchError((error) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error updating password: $error')),
+        );
+      });
+    }
   }
 }
