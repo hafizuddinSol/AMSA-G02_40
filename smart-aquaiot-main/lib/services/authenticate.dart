@@ -230,56 +230,63 @@ class FireStoreUtils {
       .set(user.toJson())
       .then((value) => null, onError: (e) => e);
 
-  static signUpWithEmailAndPassword(
-      {required String emailAddress,
-      required String password,
-      Uint8List? imageData,
-      firstName = 'Anonymous',
-      lastName = 'User'}) async {
-    try {
-      auth.UserCredential result = await auth.FirebaseAuth.instance
-          .createUserWithEmailAndPassword(
-              email: emailAddress, password: password);
-      if (imageData != null) {
-        updateProgress('Uploading image, Please wait...');
-      }
-      User user = User(
-          email: emailAddress,
-          firstName: firstName,
-          userID: result.user?.uid ?? '',
-          lastName: lastName, roles: '');
-      String? errorMessage = await createNewUser(user);
-      if (errorMessage == null) {
-        return user;
-      } else {
-        return 'Couldn\'t sign up for firebase, Please try again.';
-      }
-    } on auth.FirebaseAuthException catch (error) {
-      debugPrint('$error${error.stackTrace}');
-      String message = 'Couldn\'t sign up';
-      switch (error.code) {
-        case 'email-already-in-use':
-          message = 'Email already in use, Please pick another email!';
-          break;
-        case 'invalid-email':
-          message = 'Enter valid e-mail';
-          break;
-        case 'operation-not-allowed':
-          message = 'Email/password accounts are not enabled';
-          break;
-        case 'weak-password':
-          message = 'Password must be more than 6 characters';
-          break;
-        case 'too-many-requests':
-          message = 'Too many requests, Please try again later.';
-          break;
-      }
-      return message;
-    } catch (e, s) {
-      debugPrint('FireStoreUtils.signUpWithEmailAndPassword $e $s');
-      return 'Couldn\'t sign up';
+  static signUpWithEmailAndPassword({
+  required String emailAddress,
+  required String password,
+  Uint8List? imageData,
+  firstName = 'Anonymous',
+  lastName = 'User',
+}) async {
+  try {
+    auth.UserCredential result = await auth.FirebaseAuth.instance
+        .createUserWithEmailAndPassword(
+      email: emailAddress,
+      password: password,
+    );
+
+    // Set the user's role to "user"
+    User user = User(
+      email: emailAddress,
+      firstName: firstName,
+      userID: result.user?.uid ?? '',
+      lastName: lastName,
+      roles: 'user', // Set the user's role here
+    );
+
+    // Create a new user document in Firestore
+    String? errorMessage = await createNewUser(user);
+    if (errorMessage == null) {
+      return user;
+    } else {
+      return 'Couldn\'t sign up for firebase, Please try again.';
     }
+  } on auth.FirebaseAuthException catch (error) {
+    debugPrint('$error${error.stackTrace}');
+    String message = 'Couldn\'t sign up';
+    switch (error.code) {
+      case 'email-already-in-use':
+        message = 'Email already in use, Please pick another email!';
+        break;
+      case 'invalid-email':
+        message = 'Enter valid e-mail';
+        break;
+      case 'operation-not-allowed':
+        message = 'Email/password accounts are not enabled';
+        break;
+      case 'weak-password':
+        message = 'Password must be more than 6 characters';
+        break;
+      case 'too-many-requests':
+        message = 'Too many requests, Please try again later.';
+        break;
+    }
+    return message;
+  } catch (e, s) {
+    debugPrint('FireStoreUtils.signUpWithEmailAndPassword $e $s');
+    return 'Couldn\'t sign up';
   }
+}
+
 
   static logout() async {
     await auth.FirebaseAuth.instance.signOut();

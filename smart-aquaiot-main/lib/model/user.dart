@@ -10,7 +10,7 @@ class User {
     required this.firstName,
     required this.lastName,
     required this.userID,
-    required this.roles, // Make roles a required parameter
+    this.roles = 'user', // Default roles to 'user'
   });
 
 
@@ -22,7 +22,7 @@ class User {
       firstName: parsedJson['firstName'] ?? '',
       lastName: parsedJson['lastName'] ?? '',
       userID: parsedJson['id'] ?? parsedJson['userID'] ?? '',
-      roles: parsedJson['roles'] ?? '', // Update to correctly parse roles
+      roles: parsedJson['roles'] ?? 'user', // Update to correctly parse roles
     );
   }
 
