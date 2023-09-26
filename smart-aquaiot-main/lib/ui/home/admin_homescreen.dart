@@ -10,6 +10,7 @@ import 'temperature_page.dart';
 import 'water_level_page.dart';
 import 'feed_now_page.dart';
 import 'display_feeding_time_page.dart';
+import 'admin_viewuserprofile.dart'; // Import the admin_viewuserprofile.dart file
 
 class AdminHomeScreen extends StatefulWidget {
   final User user;
@@ -143,6 +144,17 @@ class _HomeScreenState extends State<AdminHomeScreen> {
                     },
                     child: Text('pH level'),
                     style: ElevatedButton.styleFrom(primary: Colors.green),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AdminViewUserProfile()), // Navigate to the AdminViewUserProfile page
+                      );
+                    },
+                    child: Text('View User Profile'), // Button for viewing user profiles
+                    style: ElevatedButton.styleFrom(primary: Colors.blue), // You can change the color
                   ),
                   ElevatedButton(
                     onPressed: () {

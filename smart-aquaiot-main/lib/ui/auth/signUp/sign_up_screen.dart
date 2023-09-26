@@ -11,7 +11,6 @@ import 'package:flutter_login_screen/services/helper.dart';
 import 'package:flutter_login_screen/ui/auth/authentication_bloc.dart';
 import 'package:flutter_login_screen/ui/auth/signUp/sign_up_bloc.dart';
 import 'package:flutter_login_screen/ui/auth/signUp/verifyemail_check.dart';
-import 'package:flutter_login_screen/ui/home/home_screen.dart';
 import 'package:flutter_login_screen/ui/loading_cubit.dart';
 import 'package:url_launcher/url_launcher.dart';
 class SignUpScreen extends StatefulWidget {

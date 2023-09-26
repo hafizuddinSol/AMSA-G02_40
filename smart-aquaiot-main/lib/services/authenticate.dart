@@ -7,7 +7,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_login_screen/constants.dart';
 import 'package:flutter_login_screen/model/user.dart';
-import 'package:flutter_login_screen/services/helper.dart';
 
 class FireStoreUtils {
   static FirebaseFirestore firestore = FirebaseFirestore.instance;

@@ -9,7 +9,6 @@ import 'package:flutter_login_screen/ui/auth/signUp/verifyemail_check.dart';
 import 'package:flutter_login_screen/ui/home/admin_homescreen.dart';
 import 'package:flutter_login_screen/ui/home/home_screen.dart';
 import 'package:flutter_login_screen/ui/loading_cubit.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class LoginScreen extends StatefulWidget {
