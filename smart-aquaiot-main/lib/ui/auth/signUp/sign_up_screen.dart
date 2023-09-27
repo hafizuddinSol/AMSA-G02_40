@@ -13,6 +13,7 @@ import 'package:flutter_login_screen/ui/auth/signUp/sign_up_bloc.dart';
 import 'package:flutter_login_screen/ui/auth/signUp/verifyemail_check.dart';
 import 'package:flutter_login_screen/ui/loading_cubit.dart';
 import 'package:url_launcher/url_launcher.dart';
+
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
 
@@ -53,8 +54,8 @@ class _SignUpState extends State<SignUpScreen> {
                           'Please verify your email before logging in.');
                     }
                     // Navigate to VerifyEmailCheckScreen
-        Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (context) => VerifyEmailCheckScreen(),
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (context) => VerifyEmailCheckScreen(),
                     ));
                   } else {
                     showSnackBar(
@@ -94,7 +95,8 @@ class _SignUpState extends State<SignUpScreen> {
                   padding: const EdgeInsets.only(
                     left: 16.0,
                     right: 16,
-                    top: 50, // Adjust this value for the desired vertical position
+                    top:
+                        50, // Adjust this value for the desired vertical position
                     bottom: 16,
                   ),
                   child: BlocBuilder<SignUpBloc, SignUpState>(
@@ -180,8 +182,8 @@ class _SignUpState extends State<SignUpScreen> {
                                 onSaved: (String? val) {
                                   password = val;
                                 },
-                                style:
-                                    const TextStyle(height: 0.8, fontSize: 18.0),
+                                style: const TextStyle(
+                                    height: 0.8, fontSize: 18.0),
                                 cursorColor: const Color(colorPrimary),
                                 decoration: getInputDecoration(
                                     hint: 'Password',
@@ -205,8 +207,8 @@ class _SignUpState extends State<SignUpScreen> {
                                 onSaved: (String? val) {
                                   confirmPassword = val;
                                 },
-                                style:
-                                    const TextStyle(height: 0.8, fontSize: 18.0),
+                                style: const TextStyle(
+                                    height: 0.8, fontSize: 18.0),
                                 cursorColor: const Color(colorPrimary),
                                 decoration: getInputDecoration(
                                     hint: 'Confirm Password',
@@ -221,13 +223,14 @@ class _SignUpState extends State<SignUpScreen> {
                                 style: ElevatedButton.styleFrom(
                                   fixedSize: Size.fromWidth(
                                       MediaQuery.of(context).size.width / 1.5),
-                                  backgroundColor: const Color(colorPrimary),
-                                  padding:
-                                      const EdgeInsets.only(top: 16, bottom: 16),
+                                  backgroundColor:
+                                      Color.fromARGB(255, 162, 217, 253),
+                                  padding: const EdgeInsets.only(
+                                      top: 16, bottom: 16),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(25.0),
                                     side: const BorderSide(
-                                      color: Color(colorPrimary),
+                                      color: Color.fromARGB(255, 162, 217, 253),
                                     ),
                                   ),
                                 ),
@@ -241,9 +244,9 @@ class _SignUpState extends State<SignUpScreen> {
                                 ),
                                 onPressed: () async {
                                   context.read<SignUpBloc>().add(
-                                    ValidateFieldsEvent(_key,
-                                        acceptEula: acceptEULA),
-                                  );
+                                        ValidateFieldsEvent(_key,
+                                            acceptEula: acceptEULA),
+                                      );
                                   // After successful validation, SignUpBloc will handle registration.
                                   // No need to manually send verification email here.
                                 },
@@ -253,7 +256,8 @@ class _SignUpState extends State<SignUpScreen> {
                             ListTile(
                               trailing: BlocBuilder<SignUpBloc, SignUpState>(
                                 buildWhen: (old, current) =>
-                                    current is EulaToggleState && old != current,
+                                    current is EulaToggleState &&
+                                    old != current,
                                 builder: (context, state) {
                                   if (state is EulaToggleState) {
                                     acceptEULA = state.eulaAccepted;
@@ -265,7 +269,8 @@ class _SignUpState extends State<SignUpScreen> {
                                                 eulaAccepted: value!,
                                               ),
                                             ),
-                                    activeColor: const Color(colorPrimary),
+                                    activeColor:
+                                        Color.fromARGB(255, 162, 217, 253),
                                     value: acceptEULA,
                                   );
                                 },

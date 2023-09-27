@@ -92,17 +92,16 @@ class _LoginScreen extends State<LoginScreen> {
               BlocListener<LoginBloc, LoginState>(
                 listener: (context, state) async {
                   if (state is ValidLoginFields) {
-                    await context
-                        .read<LoadingCubit>()
-                        .showLoading(context, 'Logging in, Please wait...', false);
+                    await context.read<LoadingCubit>().showLoading(
+                        context, 'Logging in, Please wait...', false);
                     if (!mounted) return;
 
                     context.read<AuthenticationBloc>().add(
-                      LoginWithEmailAndPasswordEvent(
-                        email: email!,
-                        password: password!,
-                      ),
-                    );
+                          LoginWithEmailAndPasswordEvent(
+                            email: email!,
+                            password: password!,
+                          ),
+                        );
                   }
                 },
               ),
@@ -127,9 +126,9 @@ class _LoginScreen extends State<LoginScreen> {
                             padding: EdgeInsets.only(
                                 top: 32.0, right: 16.0, left: 16.0),
                             child: Text(
-                              'Sign In',
+                              'Log In',
                               style: TextStyle(
-                                  color: Color(colorPrimary),
+                                  color: Color.fromARGB(255, 162, 217, 253),
                                   fontSize: 25.0,
                                   fontWeight: FontWeight.bold),
                             ),
@@ -147,11 +146,12 @@ class _LoginScreen extends State<LoginScreen> {
                               },
                               style: const TextStyle(fontSize: 18.0),
                               keyboardType: TextInputType.emailAddress,
-                              cursorColor: const Color(colorPrimary),
+                              cursorColor: Color.fromARGB(255, 162, 217, 253),
                               decoration: getInputDecoration(
                                   hint: 'Email Address',
                                   darkMode: isDarkMode(context),
-                                  errorColor: Theme.of(context).colorScheme.error)),
+                                  errorColor:
+                                      Theme.of(context).colorScheme.error)),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(
@@ -168,11 +168,12 @@ class _LoginScreen extends State<LoginScreen> {
                                   .add(ValidateLoginFieldsEvent(_key)),
                               textInputAction: TextInputAction.done,
                               style: const TextStyle(fontSize: 18.0),
-                              cursorColor: const Color(colorPrimary),
+                              cursorColor: Color.fromARGB(255, 162, 217, 253),
                               decoration: getInputDecoration(
                                   hint: 'Password',
                                   darkMode: isDarkMode(context),
-                                  errorColor: Theme.of(context).colorScheme.error)),
+                                  errorColor:
+                                      Theme.of(context).colorScheme.error)),
                         ),
                         ConstrainedBox(
                           constraints: const BoxConstraints(
@@ -204,11 +205,12 @@ class _LoginScreen extends State<LoginScreen> {
                               fixedSize: Size.fromWidth(
                                   MediaQuery.of(context).size.width / 1.5),
                               padding: const EdgeInsets.symmetric(vertical: 16),
-                              backgroundColor: const Color(colorPrimary),
+                              backgroundColor:
+                                  Color.fromARGB(255, 162, 217, 253),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(25.0),
                                 side: const BorderSide(
-                                  color: Color(colorPrimary),
+                                  color: Color.fromARGB(255, 162, 217, 253),
                                 ),
                               ),
                             ),
@@ -217,7 +219,7 @@ class _LoginScreen extends State<LoginScreen> {
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.white,
+                                color: Colors.black,
                               ),
                             ),
                             onPressed: () => context
