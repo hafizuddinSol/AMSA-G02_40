@@ -1,5 +1,5 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_login_screen/constants.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 
@@ -186,8 +186,11 @@ bool isDarkMode(BuildContext context) {
   }
 }
 
-InputDecoration getInputDecoration(
-    {required String hint, required bool darkMode, required Color errorColor}) {
+InputDecoration getInputDecoration({
+  required String hint,
+  required bool darkMode,
+  required Color errorColor,
+}) {
   return InputDecoration(
     constraints: const BoxConstraints(maxWidth: 720, minWidth: 200),
     contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),

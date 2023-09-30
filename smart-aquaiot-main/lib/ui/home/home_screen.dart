@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_login_screen/model/user.dart';
@@ -7,9 +6,9 @@ import 'package:flutter_login_screen/ui/auth/authentication_bloc.dart';
 import 'package:flutter_login_screen/ui/auth/welcome/welcome_screen.dart';
 import 'package:flutter_login_screen/ui/home/ph_level_page.dart';
 import 'edit_profile_page.dart';
-import 'temperature_page.dart'; 
-import 'water_level_page.dart'; 
-import 'feed_now_page.dart'; 
+import 'temperature_page.dart';
+import 'water_level_page.dart';
+import 'feed_now_page.dart';
 import 'display_feeding_time_page.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -22,9 +21,14 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  Future<String> fetchTemperatureData() async {
+    // Replace this with your logic to fetch temperature data
+    await Future.delayed(Duration(seconds: 2));
+    return '25°C';
+  }
+
   @override
   Widget build(BuildContext context) {
-
     return BlocListener<AuthenticationBloc, AuthenticationState>(
       listener: (context, state) {
         if (state.authState == AuthState.unauthenticated) {
@@ -53,11 +57,16 @@ class _HomeScreenState extends State<HomeScreen> {
         body: Column(
           children: [
             SizedBox(
-              height: 160, // Set the height for the 'Edit Profile' button
-              child: Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton(
+              height: 160,
+              child: FutureBuilder<String>(
+                future: fetchTemperatureData(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    return ElevatedButton(
                       onPressed: () {
                         // Navigate to Edit Profile Page
                         Navigator.push(
@@ -67,13 +76,13 @@ class _HomeScreenState extends State<HomeScreen> {
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.purple,
-                        elevation: 8, // Increase elevation
+                        primary: Colors.lightBlue,
+                        elevation: 7,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.zero,
                         ),
                         padding: EdgeInsets.symmetric(
-                          vertical: 16.0, // Increase vertical padding
+                          vertical: 17.0,
                         ),
                       ),
                       child: Row(
@@ -88,19 +97,20 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ],
                       ),
-                    ),
-                  ),
-                ],
+                    );
+                  }
+                },
               ),
             ),
             Expanded(
               child: GridView.count(
-                crossAxisCount: 2, // 2 columns for symmetry
-                childAspectRatio: 1.0, // Square aspect ratio
-                padding: EdgeInsets.all(16.0),
+                crossAxisCount: 1,
+                childAspectRatio: 4.7,
+                padding: EdgeInsets.all(15.0),
                 mainAxisSpacing: 16.0,
-                crossAxisSpacing: 16.0,
+                crossAxisSpacing: 17.0,
                 children: [
+                  // Add your buttons here with the modified style
                   ElevatedButton(
                     onPressed: () {
                       // Navigate to Temperature Page
@@ -111,7 +121,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       );
                     },
                     child: Text('Temperature'),
-                    style: ElevatedButton.styleFrom(primary: Colors.red),
+                    style: ElevatedButton.styleFrom(primary: Colors.lightBlue),
                   ),
                   ElevatedButton(
                     onPressed: () {
@@ -123,7 +133,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       );
                     },
                     child: Text('Water level'),
-                    style: ElevatedButton.styleFrom(primary: Colors.blue),
+                    style: ElevatedButton.styleFrom(primary: Colors.lightBlue),
                   ),
                   ElevatedButton(
                     onPressed: () {
@@ -134,7 +144,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       );
                     },
                     child: Text('Feed now'),
-                    style: ElevatedButton.styleFrom(primary: Colors.orange),
+                    style: ElevatedButton.styleFrom(primary: Colors.lightBlue),
                   ),
                   ElevatedButton(
                     onPressed: () {
@@ -146,7 +156,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       );
                     },
                     child: Text('Display feeding time'),
-                    style: ElevatedButton.styleFrom(primary: Colors.brown),
+                    style: ElevatedButton.styleFrom(primary: Colors.lightBlue),
                   ),
                   ElevatedButton(
                     onPressed: () {
@@ -155,17 +165,17 @@ class _HomeScreenState extends State<HomeScreen> {
                         context,
                         MaterialPageRoute(builder: (context) => pHLevelPage()),
                       );
-                    }, // Add a closing parenthesis here
+                    },
                     child: Text('pH level'),
-                    style: ElevatedButton.styleFrom(primary: Colors.green),
+                    style: ElevatedButton.styleFrom(primary: Colors.lightBlue),
                   ),
                   ElevatedButton(
                     onPressed: () {
                       // Implement Logout function
                       context.read<AuthenticationBloc>().add(LogoutEvent());
                     },
-                    style: ElevatedButton.styleFrom(primary: Colors.purple),
-                    child: Text('Logout', style: TextStyle(fontSize: 16.0)),
+                    style: ElevatedButton.styleFrom(primary: Colors.lightBlue),
+                    child: Text('Log out', style: TextStyle(fontSize: 16.0)),
                   ),
                 ],
               ),

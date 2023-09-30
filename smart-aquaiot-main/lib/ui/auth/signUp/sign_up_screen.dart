@@ -117,7 +117,7 @@ class _SignUpState extends State<SignUpScreen> {
                               child: Text(
                                 'Create new account',
                                 style: TextStyle(
-                                    color: Color(colorPrimary),
+                                    color: Color.fromARGB(255, 162, 217, 253),
                                     fontWeight: FontWeight.bold,
                                     fontSize: 25.0),
                               ),
@@ -239,7 +239,7 @@ class _SignUpState extends State<SignUpScreen> {
                                   style: TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.white,
+                                    color: Colors.black,
                                   ),
                                 ),
                                 onPressed: () async {
