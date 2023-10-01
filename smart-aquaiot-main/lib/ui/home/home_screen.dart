@@ -77,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       },
                       style: ElevatedButton.styleFrom(
                         primary: Colors.lightBlue,
-                        elevation: 7,
+                        elevation: 8,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.zero,
                         ),
@@ -85,17 +85,22 @@ class _HomeScreenState extends State<HomeScreen> {
                           vertical: 17.0,
                         ),
                       ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              'Edit Profile',
-                              style: TextStyle(color: Colors.white),
+                      child: Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(7.0),
+                              child: Text(
+                                'EDIT PROFILE',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                ),
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     );
                   }
@@ -110,72 +115,89 @@ class _HomeScreenState extends State<HomeScreen> {
                 mainAxisSpacing: 16.0,
                 crossAxisSpacing: 17.0,
                 children: [
-                  // Add your buttons here with the modified style
                   ElevatedButton(
                     onPressed: () {
-                      // Navigate to Temperature Page
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => TemperaturePage()),
                       );
                     },
-                    child: Text('Temperature'),
+                    child: Image.asset(
+                      'assets/images/temperature.png',
+                      height: 50,
+                    ),
                     style: ElevatedButton.styleFrom(primary: Colors.lightBlue),
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      // Navigate to Water Level Page
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => WaterLevelPage()),
                       );
                     },
-                    child: Text('Water level'),
+                    child: Image.asset(
+                      'assets/images/water_level.png',
+                      height: 50,
+                    ),
                     style: ElevatedButton.styleFrom(primary: Colors.lightBlue),
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      // Navigate to Feed Now Page
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => FeedNowPage()),
                       );
                     },
-                    child: Text('Feed now'),
+                    child: Text(
+                      'FEED NOW',
+                      style: TextStyle(fontSize: 24.0),
+                    ),
                     style: ElevatedButton.styleFrom(primary: Colors.lightBlue),
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      // Navigate to Display Feeding Time Page
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => DisplayFeedingTimePage()),
                       );
                     },
-                    child: Text('Display feeding time'),
+                    child: Text(
+                      'DISPLAY FEEDING TIME',
+                      style: TextStyle(fontSize: 24.0),
+                    ),
                     style: ElevatedButton.styleFrom(primary: Colors.lightBlue),
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      // Navigate to pH Level Page
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => pHLevelPage()),
                       );
                     },
-                    child: Text('pH level'),
+                    child: Image.asset(
+                      'assets/images/ph_level.png',
+                      height: 50,
+                    ),
                     style: ElevatedButton.styleFrom(primary: Colors.lightBlue),
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      // Implement Logout function
                       context.read<AuthenticationBloc>().add(LogoutEvent());
                     },
-                    style: ElevatedButton.styleFrom(primary: Colors.lightBlue),
-                    child: Text('Log out', style: TextStyle(fontSize: 16.0)),
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.grey,
+                      elevation: 8,
+                      side: BorderSide(color: Colors.red, width: 2),
+                    ),
+                    child: Text('LOG OUT',
+                        style: TextStyle(
+                          fontSize: 24.0,
+                          color: Color.fromARGB(255, 201, 5, 5),
+                          fontWeight: FontWeight.w900,
+                        )),
                   ),
                 ],
               ),

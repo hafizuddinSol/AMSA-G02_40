@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:io';
-// ignore: unnecessary_import
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -216,9 +215,56 @@ class _SignUpState extends State<SignUpScreen> {
                                     errorColor: Theme.of(context).errorColor),
                               ),
                             ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment
+                                  .start, // Aligns children to the start (left)
+                              children: [
+                                Text(
+                                  '________________________________________________',
+                                  style: TextStyle(
+                                    fontSize: 13.5,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                                Text(
+                                  'Password must contain the following: ',
+                                  style: TextStyle(
+                                    fontSize: 14.5,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                                Text(
+                                  '- Minimum 6 characters',
+                                  style: TextStyle(
+                                    fontSize: 13.5,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                                Text(
+                                  '- A Number',
+                                  style: TextStyle(
+                                    fontSize: 13.5,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                                Text(
+                                  '- A capital (uppercase) letter',
+                                  style: TextStyle(
+                                    fontSize: 13.5,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                                height:
+                                    20), // Add some space between the text and the button
                             Padding(
                               padding: const EdgeInsets.only(
-                                  right: 40.0, left: 40.0, top: 40.0),
+                                right: 40.0,
+                                left: 40.0,
+                                bottom: 20.0,
+                              ),
                               child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
                                   fixedSize: Size.fromWidth(
@@ -252,7 +298,9 @@ class _SignUpState extends State<SignUpScreen> {
                                 },
                               ),
                             ),
-                            const SizedBox(height: 24),
+                            SizedBox(
+                                height:
+                                    24), // Add some space between the button and the Terms of Use
                             ListTile(
                               trailing: BlocBuilder<SignUpBloc, SignUpState>(
                                 buildWhen: (old, current) =>
