@@ -10,7 +10,7 @@ import 'temperature_page.dart';
 import 'water_level_page.dart';
 import 'feed_now_page.dart';
 import 'display_feeding_time_page.dart';
-import 'admin_viewuserprofile.dart'; // Import the admin_viewuserprofile.dart file
+import 'admin_viewuserprofile.dart';
 
 class AdminHomeScreen extends StatefulWidget {
   final User user;
@@ -18,7 +18,6 @@ class AdminHomeScreen extends StatefulWidget {
   const AdminHomeScreen({Key? key, required this.user}) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
   _HomeScreenState createState() => _HomeScreenState();
 }
 
@@ -32,23 +31,29 @@ class _HomeScreenState extends State<AdminHomeScreen> {
         }
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            'Admin',
-            style: TextStyle(
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(kToolbarHeight),
+          child: AppBar(
+            title: Text(
+              'ADMIN',
+              style: TextStyle(
+                color: isDarkMode(context)
+                    ? Colors.grey.shade50
+                    : Colors.grey.shade900,
+              ),
+            ),
+            automaticallyImplyLeading:
+                false, // This line removes the back arrow
+            iconTheme: IconThemeData(
               color: isDarkMode(context)
                   ? Colors.grey.shade50
                   : Colors.grey.shade900,
             ),
+            backgroundColor: isDarkMode(context)
+                ? Colors.grey.shade900
+                : Colors.grey.shade50,
+            centerTitle: true,
           ),
-          iconTheme: IconThemeData(
-            color: isDarkMode(context)
-                ? Colors.grey.shade50
-                : Colors.grey.shade900,
-          ),
-          backgroundColor:
-              isDarkMode(context) ? Colors.grey.shade900 : Colors.grey.shade50,
-          centerTitle: true,
         ),
         body: Column(
           children: [
@@ -66,7 +71,7 @@ class _HomeScreenState extends State<AdminHomeScreen> {
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.purple,
+                        backgroundColor: Colors.lightBlue,
                         shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.zero,
                         ),
@@ -92,76 +97,173 @@ class _HomeScreenState extends State<AdminHomeScreen> {
               child: ListView(
                 padding: const EdgeInsets.all(16.0),
                 children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => TemperaturePage()),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                    child: const Text('Temperature'),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: SizedBox(
+                          height: 60,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => TemperaturePage()),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.lightBlue,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            child: Image.asset(
+                              'assets/images/temperature.png',
+                              height: 40,
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      Expanded(
+                        child: SizedBox(
+                          height: 60,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => WaterLevelPage()),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.lightBlue,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            child: Image.asset(
+                              'assets/images/water_level.png',
+                              height: 40,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => WaterLevelPage()),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
-                    child: const Text('Water level'),
+                  SizedBox(height: 8), // Added gap
+                  Row(
+                    children: [
+                      Expanded(
+                        child: SizedBox(
+                          height: 60,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => FeedNowPage()),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.lightBlue,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            child: Text('FEED NOW'),
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      Expanded(
+                        child: SizedBox(
+                          height: 60,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        DisplayFeedingTimePage()),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.lightBlue,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            child: Text('FEEDING TIME'),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => FeedNowPage()),
-                      );
-                    },
-                    child: Text('Feed now'),
-                    style: ElevatedButton.styleFrom(primary: Colors.orange),
+                  SizedBox(height: 8), // Added gap
+                  SizedBox(
+                    height: 60,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => pHLevelPage()),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.lightBlue,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: Image.asset(
+                        'assets/images/ph_level.png',
+                        height: 40,
+                      ),
+                    ),
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => DisplayFeedingTimePage()),
-                      );
-                    },
-                    child: Text('Display feeding time'),
-                    style: ElevatedButton.styleFrom(primary: Colors.brown),
+                  SizedBox(height: 8), // Added gap
+                  SizedBox(
+                    height: 60,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  AdminViewUserProfile()), // Navigate to the AdminViewUserProfile page
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.lightBlue,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: Text(
+                          'VIEW USER PROFILE'), // Button for viewing user profiles
+                    ),
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => pHLevelPage()),
-                      );
-                    },
-                    child: Text('pH level'),
-                    style: ElevatedButton.styleFrom(primary: Colors.green),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => AdminViewUserProfile()), // Navigate to the AdminViewUserProfile page
-                      );
-                    },
-                    child: Text('View User Profile'), // Button for viewing user profiles
-                    style: ElevatedButton.styleFrom(primary: Colors.blue), // You can change the color
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      context.read<AuthenticationBloc>().add(LogoutEvent());
-                    },
-                    style: ElevatedButton.styleFrom(primary: Colors.purple),
-                    child: Text('Logout', style: TextStyle(fontSize: 16.0)),
+                  SizedBox(height: 8), // Added gap
+                  SizedBox(
+                    height: 60,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        context.read<AuthenticationBloc>().add(LogoutEvent());
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: Text('LOG OUT',
+                          style: TextStyle(
+                            fontSize: 24.0,
+                            color: Color.fromARGB(255, 201, 5, 5),
+                            fontWeight: FontWeight.w900,
+                          )),
+                    ),
                   ),
                 ],
               ),

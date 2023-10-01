@@ -21,12 +21,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  Future<String> fetchTemperatureData() async {
-    // Replace this with your logic to fetch temperature data
-    await Future.delayed(Duration(seconds: 2));
-    return '25°C';
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocListener<AuthenticationBloc, AuthenticationState>(
@@ -45,6 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   : Colors.grey.shade900,
             ),
           ),
+          automaticallyImplyLeading: false, // This line removes the back arrow
           iconTheme: IconThemeData(
             color: isDarkMode(context)
                 ? Colors.grey.shade50
@@ -58,17 +53,11 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             SizedBox(
               height: 160,
-              child: FutureBuilder<String>(
-                future: fetchTemperatureData(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return CircularProgressIndicator();
-                  } else if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
-                  } else {
-                    return ElevatedButton(
+              child: Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
                       onPressed: () {
-                        // Navigate to Edit Profile Page
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -76,128 +65,181 @@ class _HomeScreenState extends State<HomeScreen> {
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.lightBlue,
-                        elevation: 8,
-                        shape: RoundedRectangleBorder(
+                        backgroundColor: Colors.lightBlue,
+                        shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.zero,
                         ),
-                        padding: EdgeInsets.symmetric(
-                          vertical: 17.0,
-                        ),
                       ),
-                      child: Center(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(7.0),
-                              child: Text(
-                                'EDIT PROFILE',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                ),
-                              ),
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text(
+                              'Edit Profile',
+                              style: TextStyle(color: Colors.white),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                    );
-                  }
-                },
+                    ),
+                  ),
+                ],
               ),
             ),
             Expanded(
-              child: GridView.count(
-                crossAxisCount: 1,
-                childAspectRatio: 4.7,
-                padding: EdgeInsets.all(15.0),
-                mainAxisSpacing: 16.0,
-                crossAxisSpacing: 17.0,
+              child: ListView(
+                padding: const EdgeInsets.all(16.0),
                 children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => TemperaturePage()),
-                      );
-                    },
-                    child: Image.asset(
-                      'assets/images/temperature.png',
-                      height: 50,
-                    ),
-                    style: ElevatedButton.styleFrom(primary: Colors.lightBlue),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: SizedBox(
+                          height:
+                              80, // Increase the height to make the button taller
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => TemperaturePage()),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.lightBlue,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            child: Image.asset(
+                              'assets/images/temperature.png',
+                              height: 50,
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      Expanded(
+                        child: SizedBox(
+                          height:
+                              80, // Increase the height to make the button taller
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => WaterLevelPage()),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.lightBlue,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            child: Image.asset(
+                              'assets/images/water_level.png',
+                              height: 50,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => WaterLevelPage()),
-                      );
-                    },
-                    child: Image.asset(
-                      'assets/images/water_level.png',
-                      height: 50,
-                    ),
-                    style: ElevatedButton.styleFrom(primary: Colors.lightBlue),
+                  SizedBox(height: 8), // Added gap
+                  Row(
+                    children: [
+                      Expanded(
+                        child: SizedBox(
+                          height:
+                              80, // Increase the height to make the button taller
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => FeedNowPage()),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.lightBlue,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            child: Text('FEED NOW'),
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      Expanded(
+                        child: SizedBox(
+                          height:
+                              80, // Increase the height to make the button taller
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        DisplayFeedingTimePage()),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.lightBlue,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            child: Text('FEEDING TIME'),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => FeedNowPage()),
-                      );
-                    },
-                    child: Text(
-                      'FEED NOW',
-                      style: TextStyle(fontSize: 24.0),
+                  SizedBox(height: 8), // Added gap
+                  SizedBox(
+                    height: 80, // Increase the height to make the button taller
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => pHLevelPage()),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.lightBlue,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: Image.asset(
+                        'assets/images/ph_level.png',
+                        height: 50,
+                      ),
                     ),
-                    style: ElevatedButton.styleFrom(primary: Colors.lightBlue),
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => DisplayFeedingTimePage()),
-                      );
-                    },
-                    child: Text(
-                      'DISPLAY FEEDING TIME',
-                      style: TextStyle(fontSize: 24.0),
+                  SizedBox(height: 8), // Added gap
+                  SizedBox(
+                    height: 80, // Increase the height to make the button taller
+                    child: ElevatedButton(
+                      onPressed: () {
+                        context.read<AuthenticationBloc>().add(LogoutEvent());
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: Text('LOG OUT',
+                          style: TextStyle(
+                            fontSize: 24.0,
+                            color: Color.fromARGB(255, 201, 5, 5),
+                            fontWeight: FontWeight.w900,
+                          )),
                     ),
-                    style: ElevatedButton.styleFrom(primary: Colors.lightBlue),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => pHLevelPage()),
-                      );
-                    },
-                    child: Image.asset(
-                      'assets/images/ph_level.png',
-                      height: 50,
-                    ),
-                    style: ElevatedButton.styleFrom(primary: Colors.lightBlue),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      context.read<AuthenticationBloc>().add(LogoutEvent());
-                    },
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.grey,
-                      elevation: 8,
-                      side: BorderSide(color: Colors.red, width: 2),
-                    ),
-                    child: Text('LOG OUT',
-                        style: TextStyle(
-                          fontSize: 24.0,
-                          color: Color.fromARGB(255, 201, 5, 5),
-                          fontWeight: FontWeight.w900,
-                        )),
                   ),
                 ],
               ),
