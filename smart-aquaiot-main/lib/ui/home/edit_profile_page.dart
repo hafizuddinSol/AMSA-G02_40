@@ -6,95 +6,14 @@ import 'package:flutter_login_screen/model/user.dart' as LocalUser;
 import 'package:firebase_auth/firebase_auth.dart';
 
 class EditProfilePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Edit Profile'),
-      ),
-      body: Center(
-        child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
-          builder: (context, state) {
-            if (state.authState == AuthState.authenticated) {
-              final user = state.user;
-
-              return StreamBuilder<LocalUser.User>(
-                stream: _getUserDetails(user!.userID),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return CircularProgressIndicator();
-                  }
-
-                  if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
-                  }
-
-                  final userDetails = snapshot.data;
-
-                  if (userDetails != null) {
-                    return SingleChildScrollView(
-                      child: DataTable(
-                        columns: [
-                          DataColumn(
-                            label: Text('Attribute'),
-                            numeric: false,
-                          ),
-                          DataColumn(
-                            label: Text('Value'),
-                            numeric: false,
-                          ),
-                          DataColumn(
-                            label: Text(''),
-                            numeric: false,
-                          ),
-                        ],
-                        rows: [
-                          _buildDataRow(
-                            context,
-                            'First Name',
-                            userDetails.firstName,
-                            'firstName',
-                            user.userID,
-                          ),
-                          _buildDataRow(
-                            context,
-                            'Last Name',
-                            userDetails.lastName,
-                            'lastName',
-                            user.userID,
-                          ),
-                          _buildDataRow(
-                            context,
-                            'Email',
-                            userDetails.email,
-                            'email',
-                            user.userID,
-                          ),
-                          _buildPasswordRow(context),
-                        ],
-                      ),
-                    );
-                  } else {
-                    return Text('User details not found.');
-                  }
-                },
-              );
-            } else {
-              return Text(
-                'Please log in to edit your profile.',
-                style: TextStyle(fontSize: 18),
-              );
-            }
-          },
-        ),
-      ),
-    );
-  }
-
   Stream<LocalUser.User> _getUserDetails(String userID) {
     final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-    return _firestore.collection('users').doc(userID).snapshots().map((snapshot) {
+    return _firestore
+        .collection('users')
+        .doc(userID)
+        .snapshots()
+        .map((snapshot) {
       final data = snapshot.data() as Map<String, dynamic>;
 
       return LocalUser.User(
@@ -106,42 +25,6 @@ class EditProfilePage extends StatelessWidget {
         // Add other fields here
       );
     });
-  }
-
-  DataRow _buildDataRow(
-    BuildContext context,
-    String attribute,
-    String value,
-    String field,
-    String userID,
-  ) {
-    return DataRow(
-      cells: [
-        DataCell(Text(attribute)),
-        DataCell(Text(value)),
-        DataCell(IconButton(
-          icon: Icon(Icons.edit),
-          onPressed: () {
-            _editField(context, attribute, value, field, userID);
-          },
-        )),
-      ],
-    );
-  }
-
-  DataRow _buildPasswordRow(BuildContext context) {
-    return DataRow(
-      cells: [
-        DataCell(Text('Password')),
-        DataCell(Text('*********')),
-        DataCell(IconButton(
-          icon: Icon(Icons.edit),
-          onPressed: () {
-            _changePassword(context);
-          },
-        )),
-      ],
-    );
   }
 
   void _editField(
@@ -170,44 +53,6 @@ class EditProfilePage extends StatelessWidget {
                   _updateEmail(context, newValue, userID);
                 } else {
                   onSave(context, newValue, field, userID);
-                }
-              },
-            ),
-            TextButton(
-              child: Text('Cancel'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _changePassword(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        final _passwordController = TextEditingController();
-        return AlertDialog(
-          title: Text('Change Password'),
-          content: TextFormField(
-            controller: _passwordController,
-            obscureText: true,
-            decoration: InputDecoration(labelText: 'New Password'),
-          ),
-          actions: <Widget>[
-            ElevatedButton(
-              child: Text('Save'),
-              onPressed: () {
-                final newPassword = _passwordController.text;
-                if (newPassword.isNotEmpty) {
-                  _updatePassword(context, newPassword);
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Password cannot be empty')),
-                  );
                 }
               },
             ),
@@ -270,6 +115,178 @@ class EditProfilePage extends StatelessWidget {
         );
       });
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Edit Profile'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.only(top: 16.0), // Add padding here
+        child: Center(
+          child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
+            builder: (context, state) {
+              if (state.authState == AuthState.authenticated) {
+                final user = state.user;
+
+                return StreamBuilder<LocalUser.User>(
+                  stream: _getUserDetails(user!.userID),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return CircularProgressIndicator();
+                    }
+
+                    if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    }
+
+                    final userDetails = snapshot.data;
+
+                    return Column(
+                      children: [
+                        CircleAvatar(
+                          radius: 40,
+                          backgroundImage: AssetImage(
+                              'assets/images/default_profile_image.png'),
+                        ),
+                        SizedBox(height: 8),
+                        Text(
+                          '${userDetails?.firstName ?? ''} ${userDetails?.lastName ?? ''}',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                        SingleChildScrollView(
+                          child: DataTable(
+                            columns: [
+                              DataColumn(
+                                label: Text(''),
+                                numeric: false,
+                              ),
+                              DataColumn(
+                                label: Text(''),
+                                numeric: false,
+                              ),
+                              DataColumn(
+                                label: Text(''),
+                                numeric: false,
+                              ),
+                            ],
+                            rows: [
+                              _buildDataRow(
+                                context,
+                                'First Name',
+                                userDetails?.firstName ?? '',
+                                'firstName',
+                                user.userID!,
+                              ),
+                              _buildDataRow(
+                                context,
+                                'Last Name',
+                                userDetails?.lastName ?? '',
+                                'lastName',
+                                user.userID!,
+                              ),
+                              _buildDataRow(
+                                context,
+                                'Email',
+                                userDetails?.email ?? '',
+                                'email',
+                                user.userID!,
+                              ),
+                              _buildPasswordRow(context),
+                            ],
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              } else {
+                return Text(
+                  'Please log in to edit your profile.',
+                  style: TextStyle(fontSize: 18),
+                );
+              }
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  DataRow _buildDataRow(
+    BuildContext context,
+    String attribute,
+    String value,
+    String field,
+    String userID,
+  ) {
+    return DataRow(
+      cells: [
+        DataCell(Text(attribute)),
+        DataCell(Text(value)),
+        DataCell(IconButton(
+          icon: Icon(Icons.edit),
+          onPressed: () {
+            _editField(context, attribute, value, field, userID);
+          },
+        )),
+      ],
+    );
+  }
+
+  DataRow _buildPasswordRow(BuildContext context) {
+    return DataRow(
+      cells: [
+        DataCell(Text('Password')),
+        DataCell(Text('*********')),
+        DataCell(IconButton(
+          icon: Icon(Icons.edit),
+          onPressed: () {
+            _changePassword(context);
+          },
+        )),
+      ],
+    );
+  }
+
+  void _changePassword(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        final _passwordController = TextEditingController();
+        return AlertDialog(
+          title: Text('Change Password'),
+          content: TextFormField(
+            controller: _passwordController,
+            obscureText: true,
+            decoration: InputDecoration(labelText: 'New Password'),
+          ),
+          actions: <Widget>[
+            ElevatedButton(
+              child: Text('Save'),
+              onPressed: () {
+                final newPassword = _passwordController.text;
+                if (newPassword.isNotEmpty) {
+                  _updatePassword(context, newPassword);
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Password cannot be empty')),
+                  );
+                }
+              },
+            ),
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void _updatePassword(BuildContext context, String newPassword) {
