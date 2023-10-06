@@ -3,18 +3,19 @@ class User {
   String firstName;
   String lastName;
   String userID;
-  String roles; // Make roles a required parameter
-  String verifyemailstatus; // Add this field
+  String roles;
+  String verifyemailstatus;
+  String? profilePicURL;
 
   User({
     required this.email,
     required this.firstName,
     required this.lastName,
     required this.userID,
-    this.roles = 'user', 
-    this.verifyemailstatus = 'false', 
+    required this.roles, // Make roles a required parameter
+    this.verifyemailstatus = 'false',
+    this.profilePicURL, // Add this field
   });
-
 
   String fullName() => '$firstName $lastName';
 
@@ -25,7 +26,8 @@ class User {
       lastName: parsedJson['lastName'] ?? '',
       userID: parsedJson['id'] ?? parsedJson['userID'] ?? '',
       roles: parsedJson['roles'] ?? 'user',
-      verifyemailstatus: parsedJson['verifyemailstatus'] ?? 'false', 
+      verifyemailstatus: parsedJson['verifyemailstatus'] ?? 'false',
+      profilePicURL: parsedJson['profilePicURL'], // Add profilePicURL
     );
   }
 
@@ -37,6 +39,7 @@ class User {
       'id': userID,
       'roles': roles,
       'verifyemailstatus': verifyemailstatus,
+      'profilePicURL': profilePicURL, // Include profilePicURL in JSON
     };
   }
 }
