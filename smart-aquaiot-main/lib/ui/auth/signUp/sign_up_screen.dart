@@ -28,6 +28,19 @@ class _SignUpState extends State<SignUpScreen> {
   bool acceptEULA = false;
   final FirebaseAuth _auth = FirebaseAuth.instance; // Initialize Firebase Auth
 
+  String? validatePassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Password is required';
+    } else if (value.length < 6) {
+      return 'Password must be at least 6 characters';
+    } else if (!value.contains(RegExp(r'[0-9]'))) {
+      return 'Password must contain a number';
+    } else if (!value.contains(RegExp(r'[A-Z]'))) {
+      return 'Password must contain an uppercase letter';
+    }
+    return null; // Password is valid
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider<SignUpBloc>(
@@ -177,7 +190,7 @@ class _SignUpState extends State<SignUpScreen> {
                                 obscureText: true,
                                 textInputAction: TextInputAction.next,
                                 controller: _passwordController,
-                                validator: validatePassword,
+                                validator: validatePassword, // Validate password
                                 onSaved: (String? val) {
                                   password = val;
                                 },
