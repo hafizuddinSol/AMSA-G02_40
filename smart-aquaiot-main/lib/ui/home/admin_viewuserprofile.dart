@@ -9,6 +9,34 @@ class AdminViewUserProfile extends StatefulWidget {
 class _AdminViewUserProfileState extends State<AdminViewUserProfile> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  void _showProfilePicture(String? profilePicURL) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Profile Picture'),
+          content: SingleChildScrollView(
+            child: Column(
+              children: [
+                profilePicURL != null
+                    ? Image.network(profilePicURL)
+                    : Text('User has not uploaded a profile picture'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,7 +45,10 @@ class _AdminViewUserProfileState extends State<AdminViewUserProfile> {
       ),
       body: Center(
         child: StreamBuilder<QuerySnapshot>(
-          stream: _firestore.collection('users').where('roles', isEqualTo: 'user').snapshots(),
+          stream: _firestore
+              .collection('users')
+              .where('roles', isEqualTo: 'user')
+              .snapshots(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return CircularProgressIndicator();
@@ -47,19 +78,30 @@ class _AdminViewUserProfileState extends State<AdminViewUserProfile> {
                   DataColumn(
                     label: Text('Email'),
                   ),
+                  DataColumn(
+                    label: Text('Profile Picture'),
+                  ),
                 ],
                 rows: snapshot.data!.docs.asMap().entries.map((entry) {
-                  final int userCount = entry.key + 1; // Calculate user count
+                  final int userCount = entry.key + 1;
                   final QueryDocumentSnapshot document = entry.value;
                   Map<String, dynamic> data =
                       document.data() as Map<String, dynamic>;
 
                   return DataRow(
                     cells: <DataCell>[
-                      DataCell(Text(userCount.toString())), 
+                      DataCell(Text(userCount.toString())),
                       DataCell(Text(data['firstName'] ?? '')),
                       DataCell(Text(data['lastName'] ?? '')),
                       DataCell(Text(data['email'] ?? '')),
+                      DataCell(
+                        ElevatedButton(
+                          onPressed: () {
+                            _showProfilePicture(data['profilePicURL']);
+                          },
+                          child: Text('View'),
+                        ),
+                      ),
                     ],
                   );
                 }).toList(),
