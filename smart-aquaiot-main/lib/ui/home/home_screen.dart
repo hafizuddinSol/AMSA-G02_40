@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_login_screen/model/user.dart';
@@ -51,6 +52,44 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         body: Column(
           children: [
+            // Add a StreamBuilder to show the reminder if profilePicURL is null
+            StreamBuilder<DocumentSnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(widget.user.userID)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  final data = snapshot.data?.data() as Map<String, dynamic>;
+                  final profilePicURL = data['profilePicURL'];
+                  if (profilePicURL == null || profilePicURL.isEmpty) {
+                    // Show the reminder
+                    return Container(
+                      margin: EdgeInsets.all(16.0),
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                        elevation: 4.0,
+                        color: Colors.red,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Text(
+                            'Please upload your profile picture at EDIT PROFILE button !',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  }
+                }
+                // If profilePicURL is not null or empty, or there's no data yet, return an empty container
+                return Container();
+              },
+            ),
             Padding(
               padding:
                   EdgeInsets.only(top: 6.0), // Adjust the top padding as needed
