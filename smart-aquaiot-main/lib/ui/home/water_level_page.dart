@@ -12,7 +12,19 @@ class _WaterLevelPageState extends State<WaterLevelPage> {
 
   String? deviceUID = 'N/A';
   String? name = 'N/A';
-  double? level;
+  double? value;
+
+  String getWaterLevelMessage(double? waterLevel) {
+    if (waterLevel == null) {
+      return 'N/A';
+    } else if (waterLevel == 0.0) {
+      return 'STATUS: Below half, please check your water level';
+    } else if (waterLevel == 1.0) {
+      return 'STATUS: Upper half, you are in good condition!';
+    } else {
+      return 'Unknown water level';
+    }
+  }
 
   @override
   void initState() {
@@ -26,13 +38,13 @@ class _WaterLevelPageState extends State<WaterLevelPage> {
         setState(() {
           deviceUID = waterLevelData['DeviceUID'] ?? 'N/A';
           name = waterLevelData['Name'] ?? 'N/A';
-          level = waterLevelData['Level']?.toDouble();
+          value = waterLevelData['value']?.toDouble();
         });
       } else {
         setState(() {
           deviceUID = 'N/A';
           name = 'N/A';
-          level = null;
+          value = null;
         });
       }
     }, onError: (error) {
@@ -42,6 +54,8 @@ class _WaterLevelPageState extends State<WaterLevelPage> {
 
   @override
   Widget build(BuildContext context) {
+    String waterLevelMessage = getWaterLevelMessage(value);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Water Level Page'),
@@ -50,10 +64,9 @@ class _WaterLevelPageState extends State<WaterLevelPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('This is the Water Level Page'),
             SizedBox(height: 20),
             Text(
-              'Level: ${level?.toStringAsFixed(2) ?? 'N/A'}',
+              'Level: ${value?.toStringAsFixed(2) ?? 'N/A'}',
               style: TextStyle(fontSize: 24),
             ),
             Text(
@@ -65,12 +78,10 @@ class _WaterLevelPageState extends State<WaterLevelPage> {
               style: TextStyle(fontSize: 24),
             ),
             SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                // Refresh the data by setting the state again
-                setState(() {});
-              },
-              child: Text('Refresh'),
+            Text(
+              waterLevelMessage,
+              style: TextStyle(fontSize: 18, fontStyle: FontStyle.italic),
+              textAlign: TextAlign.center,
             ),
           ],
         ),
