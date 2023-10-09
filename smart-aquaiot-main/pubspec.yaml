@@ -10,6 +10,7 @@ dependencies:
   firebase_auth: ^4.1.1
   cloud_firestore: ^4.0.4
   firebase_storage: ^11.0.4
+  firebase_database: ^10.2.7
 
   shared_preferences: ^2.0.15
   progress_dialog:

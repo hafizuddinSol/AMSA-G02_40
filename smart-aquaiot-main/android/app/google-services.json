@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "433426065602",
+    "firebase_url": "https://aquarium-management-system-default-rtdb.firebaseio.com",
     "project_id": "aquarium-management-system",
     "storage_bucket": "aquarium-management-system.appspot.com"
   },
