@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,6 +24,15 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  String? profilePicURL; // Store the profile picture URL
+  File? _selectedImage;
+
+  @override
+  void initState() {
+    super.initState();
+    profilePicURL = widget.user.profilePicURL; // Initialize with the user's profile picture URL
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<AuthenticationBloc, AuthenticationState>(
@@ -52,41 +63,41 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         body: Column(
           children: [
-            StreamBuilder<DocumentSnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection('users')
-                  .doc(widget.user.userID)
-                  .snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  final data = snapshot.data?.data() as Map<String, dynamic>;
-                  final profilePicURL = data['profilePicURL'];
-                  if (profilePicURL == null || profilePicURL.isEmpty) {
-                    return Container(
-                      margin: EdgeInsets.all(16.0),
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12.0),
-                        ),
-                        elevation: 4.0,
-                        color: Colors.red,
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Text(
+             StreamBuilder<DocumentSnapshot>(
+               stream: FirebaseFirestore.instance
+                   .collection('users')
+                   .doc(widget.user.userID)
+                   .snapshots(),
+               builder: (context, snapshot) {
+                 if (snapshot.hasData) {
+                   final data = snapshot.data?.data() as Map<String, dynamic>;
+                   final profilePicURL = data['profilePicURL'];
+                   if (profilePicURL == null || profilePicURL.isEmpty) {
+                     return Container(
+                       margin: EdgeInsets.all(16.0),
+                       child: Card(
+                         shape: RoundedRectangleBorder(
+                           borderRadius: BorderRadius.circular(12.0),
+                         ),
+                         elevation: 4.0,
+                         color: Colors.red,
+                         child: Padding(
+                           padding: const EdgeInsets.all(16.0),
+                           child: Text(
                             'Please upload your profile picture at EDIT PROFILE button !',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
-                  }
-                }
-                return Container();
-              },
-            ),
+                             style: TextStyle(
+                               color: Colors.white,
+                               fontWeight: FontWeight.bold,
+                             ),
+                           ),
+                         ),
+                       ),
+                     );
+                   }
+                 }
+                 return Container();
+               },
+             ),
             Padding(
               padding: EdgeInsets.only(top: 6.0),
               child: SizedBox(
@@ -98,21 +109,21 @@ class _HomeScreenState extends State<HomeScreen> {
                         onPressed: () async {
                           // Navigate to EditProfilePage
                           final updatedUser = await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => EditProfilePage(
-                                profilePicURL: widget.user.profilePicURL,
-                                firstName: widget.user.firstName,
-                                lastName: widget.user.lastName,
-                              ),
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => EditProfilePage(
+                              profilePicURL: profilePicURL, // Pass the profilePicURL
+                              firstName: widget.user.firstName,
+                              lastName: widget.user.lastName,
+                              onUpdateProfilePicURL: _updateProfilePicURL, // Pass the callback
                             ),
-                          );
+                          ),
+                        );
 
                           if (updatedUser != null) {
                             // Update the user object with new details
                             setState(() {
-                              widget.user.profilePicURL =
-                                  updatedUser.profilePicURL;
+                              profilePicURL = updatedUser.profilePicURL;
                               widget.user.firstName = updatedUser.firstName;
                               widget.user.lastName = updatedUser.lastName;
                             });
@@ -128,13 +139,18 @@ class _HomeScreenState extends State<HomeScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             CircleAvatar(
-                              radius: 40,
-                              backgroundImage:
-                                  NetworkImage(widget.user.profilePicURL ?? ''),
-                              child: widget.user.profilePicURL != null
-                                  ? null
-                                  : Icon(Icons.person),
-                            ),
+                                radius: 40,
+                                backgroundImage: profilePicURL != null
+                                    ? NetworkImage(profilePicURL!)
+                                    : _selectedImage != null
+                                        ? FileImage(_selectedImage!)
+                                            as ImageProvider<Object>?
+                                        : AssetImage(
+                                                'assets/images/default_profile_image.png')
+                                            as ImageProvider<Object>?,
+                                key: UniqueKey(),
+                              ),
+
                             SizedBox(height: 10),
                             Text(
                               '${widget.user.firstName} ${widget.user.lastName}',
@@ -314,4 +330,11 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
+void _updateProfilePicURL(String newProfilePicURL) {
+  setState(() {
+    profilePicURL = newProfilePicURL;
+  });
 }
+}
+
