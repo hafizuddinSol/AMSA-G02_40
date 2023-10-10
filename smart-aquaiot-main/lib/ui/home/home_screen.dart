@@ -40,7 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   : Colors.grey.shade900,
             ),
           ),
-          automaticallyImplyLeading: false, // This line removes the back arrow
+          automaticallyImplyLeading: false,
           iconTheme: IconThemeData(
             color: isDarkMode(context)
                 ? Colors.grey.shade50
@@ -52,7 +52,6 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         body: Column(
           children: [
-            // Add a StreamBuilder to show the reminder if profilePicURL is null
             StreamBuilder<DocumentSnapshot>(
               stream: FirebaseFirestore.instance
                   .collection('users')
@@ -63,7 +62,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   final data = snapshot.data?.data() as Map<String, dynamic>;
                   final profilePicURL = data['profilePicURL'];
                   if (profilePicURL == null || profilePicURL.isEmpty) {
-                    // Show the reminder
                     return Container(
                       margin: EdgeInsets.all(16.0),
                       child: Card(
@@ -86,21 +84,20 @@ class _HomeScreenState extends State<HomeScreen> {
                     );
                   }
                 }
-                // If profilePicURL is not null or empty, or there's no data yet, return an empty container
                 return Container();
               },
             ),
             Padding(
-              padding:
-                  EdgeInsets.only(top: 6.0), // Adjust the top padding as needed
+              padding: EdgeInsets.only(top: 6.0),
               child: SizedBox(
                 height: 120,
                 child: Row(
                   children: [
                     Expanded(
                       child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
+                        onPressed: () async {
+                          // Navigate to EditProfilePage
+                          final updatedUser = await Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) => EditProfilePage(
@@ -110,6 +107,16 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             ),
                           );
+
+                          if (updatedUser != null) {
+                            // Update the user object with new details
+                            setState(() {
+                              widget.user.profilePicURL =
+                                  updatedUser.profilePicURL;
+                              widget.user.firstName = updatedUser.firstName;
+                              widget.user.lastName = updatedUser.lastName;
+                            });
+                          }
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.transparent,
@@ -124,6 +131,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               radius: 40,
                               backgroundImage:
                                   NetworkImage(widget.user.profilePicURL ?? ''),
+                              child: widget.user.profilePicURL != null
+                                  ? null
+                                  : Icon(Icons.person),
                             ),
                             SizedBox(height: 10),
                             Text(

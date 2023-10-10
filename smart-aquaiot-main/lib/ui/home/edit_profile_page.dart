@@ -66,13 +66,21 @@ class _EditProfilePageState extends State<EditProfilePage> {
         });
 
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Profile picture updated successfully')),
+          SnackBar(
+              content: Text(
+                  'Profile picture updated successfully, Please log in again to see the updated picture')),
         );
+        Navigator.pop(
+            context, user); // Add this line to pass the updated user back
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error updating profile picture')),
         );
       }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('No image selected')),
+      );
     }
   }
 
@@ -236,16 +244,21 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                 key: UniqueKey(),
                               ),
                             ),
+                            Text(
+                              '${userDetails?.firstName ?? ''} ${userDetails?.lastName ?? ''}',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                             ElevatedButton(
                               onPressed: () {
                                 _showImagePickerDialog();
                               },
                               child: Text('Edit'),
                             ),
-                            SizedBox(height: 8),
-                            Text(
-                              '${userDetails?.firstName ?? ''} ${userDetails?.lastName ?? ''}',
-                              style: TextStyle(color: Colors.black),
+                            SizedBox(
+                              height: 15,
                             ),
                           ],
                         ),
@@ -482,7 +495,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
       field: newValue,
     }).then((_) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Profile updated successfully')),
+        SnackBar(
+            content: Text(
+                'Profile updated successfully, Please Log In again to see new Updated Info')),
       );
       Navigator.of(context).pop();
     }).catchError((error) {
