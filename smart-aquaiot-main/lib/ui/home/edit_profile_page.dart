@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_login_screen/ui/auth/authentication_bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-// ignore: library_prefixes
 import 'package:flutter_login_screen/model/user.dart' as LocalUser;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
@@ -10,6 +9,16 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:io';
 
 class EditProfilePage extends StatefulWidget {
+  final String? profilePicURL;
+  final String? firstName;
+  final String? lastName;
+
+  EditProfilePage({
+    this.profilePicURL,
+    this.firstName,
+    this.lastName,
+  });
+
   @override
   _EditProfilePageState createState() => _EditProfilePageState();
 }
@@ -385,6 +394,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
           content: TextFormField(
             controller: _textController,
             decoration: InputDecoration(labelText: 'New $fieldName'),
+            validator: (value) {
+              if (fieldName == 'First Name' || fieldName == 'Last Name') {
+                if (RegExp(r'[0-9]').hasMatch(value!)) {
+                  return 'Name should not contain numbers';
+                }
+              }
+              return null;
+            },
           ),
           actions: <Widget>[
             ElevatedButton(
@@ -392,6 +409,16 @@ class _EditProfilePageState extends State<EditProfilePage> {
               onPressed: () {
                 final newValue = _textController.text;
                 if (newValue.isNotEmpty) {
+                  if (fieldName == 'First Name' || fieldName == 'Last Name') {
+                    if (RegExp(r'[0-9]').hasMatch(newValue)) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                            content:
+                                Text('$fieldName should not contain numbers')),
+                      );
+                      return; // Do not save if numbers are present
+                    }
+                  }
                   if (field == 'email' && newValue != currentValue) {
                     _updateEmail(context, newValue, userID);
                   } else {

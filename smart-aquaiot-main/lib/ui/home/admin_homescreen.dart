@@ -58,7 +58,7 @@ class _HomeScreenState extends State<AdminHomeScreen> {
         body: Column(
           children: [
             SizedBox(
-              height: 160,
+              height: 120,
               child: Row(
                 children: [
                   Expanded(
@@ -67,23 +67,35 @@ class _HomeScreenState extends State<AdminHomeScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => EditProfilePage()),
+                            builder: (context) => EditProfilePage(
+                              profilePicURL: widget.user.profilePicURL,
+                              firstName: widget.user.firstName,
+                              lastName: widget.user.lastName,
+                            ),
+                          ),
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.lightBlue,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.zero,
+                        backgroundColor: Colors.transparent,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(60),
                         ),
                       ),
-                      child: const Row(
+                      child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Text(
-                              'Edit Profile',
-                              style: TextStyle(color: Colors.white),
+                          CircleAvatar(
+                            radius: 40,
+                            backgroundImage:
+                                NetworkImage(widget.user.profilePicURL ?? ''),
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            '${widget.user.firstName} ${widget.user.lastName}',
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w900,
                             ),
                           ),
                         ],
