@@ -1,7 +1,7 @@
 #!/bin/sh
 # This is a generated file; do not edit or check into version control.
-export "FLUTTER_ROOT=C:\Users\najmi\OneDrive\Desktop\DipUTM\SEM_5\SD\flutter\flutter"
-export "FLUTTER_APPLICATION_PATH=C:\Users\najmi\OneDrive\Documents\GitHub\AMSA-G02_40\smart-aquaiot-main"
+export "FLUTTER_ROOT=C:\Users\user\OneDrive\Documents\flutter"
+export "FLUTTER_APPLICATION_PATH=C:\Users\user\OneDrive\Desktop\MASTER PROJECT - PROJECT SD G02_40\smart-aquaiot-main"
 export "COCOAPODS_PARALLEL_CODE_SIGN=true"
 export "FLUTTER_TARGET=lib\main.dart"
 export "FLUTTER_BUILD_DIR=build"
