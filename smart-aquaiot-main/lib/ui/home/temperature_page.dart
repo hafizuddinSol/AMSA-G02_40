@@ -8,20 +8,19 @@ class TemperaturePage extends StatefulWidget {
 
 class _TemperaturePageState extends State<TemperaturePage> {
   DatabaseReference _temperatureRef =
-      FirebaseDatabase.instance.reference().child('Living Room/temperature');
+      FirebaseDatabase.instance.ref().child('Living Room/temperature');
 
-  String? deviceUID = 'N/A';
-  String? name = 'N/A';
   double? temperature;
   String timestamp = 'Latest data received on (date), (time) \nNote: Time generated are 5 secs±';
-
+  List<String> temperatureHistory = [];
+ 
   void updateTimestamp() {
     final now = DateTime.now();
     final formattedDate = '${now.year}-${now.month}-${now.day}';
-    final formattedTime = '${now.hour}:${now.minute}:${now.second}';
+    final formattedTime = '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}:${now.second.toString().padLeft(2, '0')}';
     setState(() {
       timestamp =
-          'Latest data received on $formattedDate, $formattedTime \nNote: Time generated are 5 secs±';
+          'Latest data received on $formattedDate, $formattedTime \nNote: Time generated is 5 secs±';
     });
   }
 
@@ -35,15 +34,26 @@ class _TemperaturePageState extends State<TemperaturePage> {
 
       if (temperatureData != null) {
         setState(() {
-          deviceUID = temperatureData['DeviceUID'] ?? 'N/A';
-          name = temperatureData['Name'] ?? 'N/A';
           temperature = temperatureData['value']?.toDouble();
           updateTimestamp(); // Update timestamp when new data is received
+
+          // Format the timestamp
+          final now = DateTime.now();
+          final formattedTimestamp = '${now.year}-${now.month}-${now.day} ${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}:${now.second.toString().padLeft(2, '0')}';
+
+          // Create a string that combines the temperature and timestamp
+          final temperatureReading = 'Temperature: ${temperature?.toStringAsFixed(2) ?? 'N/A'}°C at $formattedTimestamp';
+
+          // Add the new temperature reading to the history
+          temperatureHistory.insert(0, temperatureReading);
+
+          // Ensure the history list only contains a certain number of entries, e.g., 10
+          if (temperatureHistory.length > 15) {
+            temperatureHistory.removeLast();
+          }
         });
       } else {
         setState(() {
-          deviceUID = 'N/A';
-          name = 'N/A';
           temperature = null;
         });
       }
@@ -62,17 +72,12 @@ class _TemperaturePageState extends State<TemperaturePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              'Temperature: ${temperature?.toStringAsFixed(2) ?? 'N/A'}°C',
-              style: TextStyle(fontSize: 24),
-            ),
-            Text(
-              'Name: $name',
-              style: TextStyle(fontSize: 24),
-            ),
-            Text(
-              'Device UID: $deviceUID',
-              style: TextStyle(fontSize: 24),
+            Align(
+              alignment: Alignment.center,
+              child: Text(
+                'Temperature: ${temperature?.toStringAsFixed(2) ?? 'N/A'}°C',
+                style: TextStyle(fontSize: 24),
+              ),
             ),
             RichText(
               textAlign: TextAlign.center,
@@ -88,7 +93,24 @@ class _TemperaturePageState extends State<TemperaturePage> {
                 ],
               ),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 250),
+            Center(
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Container(
+                      height: 800, // Set the desired height for the temperature history
+                      child: ListView.builder(
+        itemCount: temperatureHistory.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Text(temperatureHistory[index]),
+          );
+        },
+      ),
+    ),
+  ),
+)
+
           ],
         ),
       ),
