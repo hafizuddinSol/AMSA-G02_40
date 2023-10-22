@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class WaterLevelPage extends StatefulWidget {
   @override
@@ -10,9 +11,8 @@ class _WaterLevelPageState extends State<WaterLevelPage> {
   DatabaseReference _waterLevelRef =
       FirebaseDatabase.instance.reference().child('Living Room/waterlevel');
 
-  String? deviceUID = 'N/A';
-  String? name = 'N/A';
   double? value;
+  List<String> waterLevelHistory = [];
 
   String getWaterLevelMessage(double? waterLevel) {
     if (waterLevel == null) {
@@ -29,6 +29,7 @@ class _WaterLevelPageState extends State<WaterLevelPage> {
   @override
   void initState() {
     super.initState();
+    loadWaterLevelHistory(); // Load history data when the page initializes
     _waterLevelRef.onValue.listen((event) {
       final DataSnapshot snapshot = event.snapshot;
       final Map<dynamic, dynamic>? waterLevelData =
@@ -36,19 +37,47 @@ class _WaterLevelPageState extends State<WaterLevelPage> {
 
       if (waterLevelData != null) {
         setState(() {
-          deviceUID = waterLevelData['DeviceUID'] ?? 'N/A';
-          name = waterLevelData['Name'] ?? 'N/A';
           value = waterLevelData['value']?.toDouble();
+
+          // Format the timestamp
+          final now = DateTime.now();
+          final formattedTimestamp =
+              '${now.year}-${now.month}-${now.day} ${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}:${now.second.toString().padLeft(2, '0')}';
+
+          // Create a string that combines the water level and timestamp
+          final waterLevelReading =
+              'Level: ${value?.toStringAsFixed(2) ?? 'N/A'} at $formattedTimestamp';
+
+          // Add the new water level reading to the history
+          waterLevelHistory.insert(0, waterLevelReading);
+
+          // Ensure the history list only contains a certain number of entries, e.g., 10
+          if (waterLevelHistory.length > 10) {
+            waterLevelHistory.removeLast();
+          }
+
+          saveWaterLevelHistory(); // Save updated history data
         });
       } else {
         setState(() {
-          deviceUID = 'N/A';
-          name = 'N/A';
           value = null;
         });
       }
     }, onError: (error) {
       print('Error fetching water level: $error');
+    });
+  }
+
+  Future<void> saveWaterLevelHistory() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList('waterLevelHistory', waterLevelHistory);
+  }
+
+  Future<void> loadWaterLevelHistory() async {
+    final prefs = await SharedPreferences.getInstance();
+    final savedHistory = prefs.getStringList('waterLevelHistory') ?? [];
+    setState(() {
+      waterLevelHistory = savedHistory;
     });
   }
 
@@ -70,18 +99,24 @@ class _WaterLevelPageState extends State<WaterLevelPage> {
               style: TextStyle(fontSize: 24),
             ),
             Text(
-              'Name: $name',
-              style: TextStyle(fontSize: 24),
-            ),
-            Text(
-              'Device UID: $deviceUID',
-              style: TextStyle(fontSize: 24),
-            ),
-            SizedBox(height: 20),
-            Text(
               waterLevelMessage,
               style: TextStyle(fontSize: 18, fontStyle: FontStyle.italic),
               textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 250),
+            Align(
+              alignment: Alignment.center,
+              child: Container(
+                height: 800, // Set the desired height for the water level history
+                child: ListView.builder(
+                  itemCount: waterLevelHistory.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      title: Text(waterLevelHistory[index]),
+                    );
+                  },
+                ),
+              ),
             ),
           ],
         ),
