@@ -63,48 +63,51 @@ class _AdminViewUserProfileState extends State<AdminViewUserProfile> {
             }
 
             return SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: DataTable(
-                columns: <DataColumn>[
-                  DataColumn(
-                    label: Text(' '),
-                  ),
-                  DataColumn(
-                    label: Text('First Name'),
-                  ),
-                  DataColumn(
-                    label: Text('Last Name'),
-                  ),
-                  DataColumn(
-                    label: Text('Email'),
-                  ),
-                  DataColumn(
-                    label: Text('Profile Picture'),
-                  ),
-                ],
-                rows: snapshot.data!.docs.asMap().entries.map((entry) {
-                  final int userCount = entry.key + 1;
-                  final QueryDocumentSnapshot document = entry.value;
-                  Map<String, dynamic> data =
-                      document.data() as Map<String, dynamic>;
+              scrollDirection: Axis.vertical,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: DataTable(
+                  columns: <DataColumn>[
+                    DataColumn(
+                      label: Text(' '),
+                    ),
+                    DataColumn(
+                      label: Text('First Name'),
+                    ),
+                    DataColumn(
+                      label: Text('Last Name'),
+                    ),
+                    DataColumn(
+                      label: Text('Email'),
+                    ),
+                    DataColumn(
+                      label: Text('Profile Picture'),
+                    ),
+                  ],
+                  rows: snapshot.data!.docs.asMap().entries.map((entry) {
+                    final int userCount = entry.key + 1;
+                    final QueryDocumentSnapshot document = entry.value;
+                    Map<String, dynamic> data =
+                        document.data() as Map<String, dynamic>;
 
-                  return DataRow(
-                    cells: <DataCell>[
-                      DataCell(Text(userCount.toString())),
-                      DataCell(Text(data['firstName'] ?? '')),
-                      DataCell(Text(data['lastName'] ?? '')),
-                      DataCell(Text(data['email'] ?? '')),
-                      DataCell(
-                        ElevatedButton(
-                          onPressed: () {
-                            _showProfilePicture(data['profilePicURL']);
-                          },
-                          child: Text('View'),
+                    return DataRow(
+                      cells: <DataCell>[
+                        DataCell(Text(userCount.toString())),
+                        DataCell(Text(data['firstName'] ?? '')),
+                        DataCell(Text(data['lastName'] ?? '')),
+                        DataCell(Text(data['email'] ?? '')),
+                        DataCell(
+                          ElevatedButton(
+                            onPressed: () {
+                              _showProfilePicture(data['profilePicURL']);
+                            },
+                            child: Text('View'),
+                          ),
                         ),
-                      ),
-                    ],
-                  );
-                }).toList(),
+                      ],
+                    );
+                  }).toList(),
+                ),
               ),
             );
           },

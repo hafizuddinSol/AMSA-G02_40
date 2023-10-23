@@ -4,7 +4,6 @@ import 'package:flutter_login_screen/model/user.dart';
 import 'package:flutter_login_screen/services/helper.dart';
 import 'package:flutter_login_screen/ui/auth/authentication_bloc.dart';
 import 'package:flutter_login_screen/ui/auth/welcome/welcome_screen.dart';
-import 'package:flutter_login_screen/ui/home/ph_level_page.dart';
 import 'edit_profile_page.dart';
 import 'temperature_page.dart';
 import 'water_level_page.dart';
@@ -210,29 +209,6 @@ class _HomeScreenState extends State<AdminHomeScreen> {
                         ),
                       ),
                     ],
-                  ),
-                  SizedBox(height: 8), // Added gap
-                  SizedBox(
-                    height: 60,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => pHLevelPage()),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.lightBlue,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      child: Image.asset(
-                        'assets/images/ph_level.png',
-                        height: 40,
-                      ),
-                    ),
                   ),
                   SizedBox(height: 8), // Added gap
                   SizedBox(

@@ -5,10 +5,10 @@ class FeedNowPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Feed Now Page'),
+        title: Text('Feed Now'),
       ),
       body: Center(
-        child: Text('This is the Feed Now Page'),
+        child: Text('You just feed you fish! Very Good!'),
       ),
     );
   }
