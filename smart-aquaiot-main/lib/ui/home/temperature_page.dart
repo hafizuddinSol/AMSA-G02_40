@@ -120,7 +120,7 @@ class _TemperaturePageState extends State<TemperaturePage> {
               child: Align(
                 alignment: Alignment.center,
                 child: Container(
-                  height: 800,
+                  height: 450,
                   child: ListView.builder(
                     itemCount: temperatureHistory.length,
                     itemBuilder: (context, index) {
