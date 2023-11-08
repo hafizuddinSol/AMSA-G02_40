@@ -103,11 +103,9 @@ class _WaterLevelPageState extends State<WaterLevelPage> {
               style: TextStyle(fontSize: 18, fontStyle: FontStyle.italic),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 250),
-            Align(
-              alignment: Alignment.center,
+            SizedBox(height: 20), // Added some space here
+            Expanded(
               child: Container(
-                height: 800, // Set the desired height for the water level history
                 child: ListView.builder(
                   itemCount: waterLevelHistory.length,
                   itemBuilder: (context, index) {
