@@ -199,7 +199,7 @@ class _HomeScreenState extends State<AdminHomeScreen> {
                       SizedBox(width: 8),
                       Expanded(
                         child: SizedBox(
-                          height: 60,
+                          height: 80,
                           child: ElevatedButton(
                             onPressed: () {
                               Navigator.push(
