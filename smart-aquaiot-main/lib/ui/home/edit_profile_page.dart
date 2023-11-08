@@ -9,7 +9,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:io';
 
-
 class EditProfilePage extends StatefulWidget {
   final String? profilePicURL;
   final String? firstName;
@@ -50,53 +49,50 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   Future<void> _pickImage(ImageSource source) async {
-  final pickedImage = await ImagePicker().pickImage(source: source);
-  if (pickedImage != null) {
-    setState(() {
-      _selectedImage = File(pickedImage.path);
-    });
-
-    final user = BlocProvider.of<AuthenticationBloc>(context).state.user!;
-    final imageURL = await _uploadProfilePicture(user.userID);
-
-    if (imageURL != null) {
+    final pickedImage = await ImagePicker().pickImage(source: source);
+    if (pickedImage != null) {
       setState(() {
-        _profilePicURL = imageURL;
+        _selectedImage = File(pickedImage.path);
       });
 
-      final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-      await _firestore.collection('users').doc(user.userID).update({
-        'profilePicURL': imageURL,
-      });
+      final user = BlocProvider.of<AuthenticationBloc>(context).state.user!;
+      final imageURL = await _uploadProfilePicture(user.userID);
 
-      // Call the callback to update the profile picture URL in HomeScreen
-      if (widget.onUpdateProfilePicURL != null) {
-        widget.onUpdateProfilePicURL!(imageURL);
+      if (imageURL != null) {
+        setState(() {
+          _profilePicURL = imageURL;
+        });
+
+        final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+        await _firestore.collection('users').doc(user.userID).update({
+          'profilePicURL': imageURL,
+        });
+
+        // Call the callback to update the profile picture URL in HomeScreen
+        if (widget.onUpdateProfilePicURL != null) {
+          widget.onUpdateProfilePicURL!(imageURL);
+        }
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Profile picture updated successfully')),
+        );
+
+        // Add this code to sign out the user
+        // FirebaseAuth.instance.signOut();
+
+        // You can also navigate to the login page if needed
+        // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error updating profile picture')),
+        );
       }
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: Text('Profile picture updated successfully')),
-      );
-
-      // Add this code to sign out the user
-      // FirebaseAuth.instance.signOut();
-
-      // You can also navigate to the login page if needed
-      // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error updating profile picture')),
+        SnackBar(content: Text('No image selected')),
       );
     }
-  } else {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('No image selected')),
-    );
   }
-}
-
-
 
   void _showImagePickerDialog() {
     showDialog(
