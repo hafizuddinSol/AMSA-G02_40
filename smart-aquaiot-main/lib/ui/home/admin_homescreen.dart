@@ -14,7 +14,7 @@ void feedFish(BuildContext context) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
-      Future.delayed(Duration(seconds: 2), () {
+      Future.delayed(Duration(seconds: 3), () {
         Navigator.of(context).pop();
       });
       return AlertDialog(
