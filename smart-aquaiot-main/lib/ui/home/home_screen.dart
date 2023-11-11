@@ -7,25 +7,11 @@ import 'package:flutter_login_screen/model/user.dart';
 import 'package:flutter_login_screen/services/helper.dart';
 import 'package:flutter_login_screen/ui/auth/authentication_bloc.dart';
 import 'package:flutter_login_screen/ui/auth/welcome/welcome_screen.dart';
+import 'package:flutter_login_screen/ui/home/feed_now_page.dart';
 import 'edit_profile_page.dart';
 import 'temperature_page.dart';
 import 'water_level_page.dart';
 import 'display_feeding_time_page.dart';
-
-void feedFish(BuildContext context) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      Future.delayed(Duration(seconds: 3), () {
-        Navigator.of(context).pop();
-      });
-      return AlertDialog(
-        title: Text('Feeding Complete'),
-        content: Text('You just fed your fish! Very Good!'),
-      );
-    },
-  );
-}
 
 class HomeScreen extends StatefulWidget {
   final User user;
@@ -249,10 +235,14 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: SizedBox(
                           height: 80,
                           child: ElevatedButton(
-                            onPressed: () {
-                              feedFish(
-                                  context); // Call the feedFish function here
-                            },
+                           onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => FeedNowPage(), // Replace with the actual name of your feed_now_page.dart
+                ),
+              );
+            },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.lightBlue,
                               shape: RoundedRectangleBorder(
