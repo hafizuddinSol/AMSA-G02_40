@@ -90,49 +90,46 @@ class _TemperaturePageState extends State<TemperaturePage> {
       appBar: AppBar(
         title: Text('Temperature Page'),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Align(
-              alignment: Alignment.center,
-              child: Text(
-                'Temperature: ${temperature?.toStringAsFixed(2) ?? 'N/A'}°C',
-                style: TextStyle(fontSize: 24),
-              ),
-            ),
-            RichText(
-              textAlign: TextAlign.center,
-              text: TextSpan(
-                children: [
-                  TextSpan(
-                    text: timestamp,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontStyle: FontStyle.italic,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 250),
-            Center(
-              child: Align(
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Align(
                 alignment: Alignment.center,
-                child: Container(
-                  height: 450,
-                  child: ListView.builder(
-                    itemCount: temperatureHistory.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text(temperatureHistory[index]),
-                      );
-                    },
-                  ),
+                child: Text(
+                  'Temperature: ${temperature?.toStringAsFixed(2) ?? 'N/A'}°C',
+                  style: TextStyle(fontSize: 24),
                 ),
               ),
-            ),
-          ],
+              RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(
+                  children: [
+                    TextSpan(
+                      text: timestamp,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 20), // Adjusted the height
+              Container(
+                height: 300, // Adjust the height as needed
+                child: ListView.builder(
+                  itemCount: temperatureHistory.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      title: Text(temperatureHistory[index]),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
