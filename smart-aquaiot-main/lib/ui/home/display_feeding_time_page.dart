@@ -1,7 +1,5 @@
-import 'dart:async';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:intl/intl.dart';
 
 class DisplayFeedingTimePage extends StatefulWidget {
@@ -11,131 +9,118 @@ class DisplayFeedingTimePage extends StatefulWidget {
 }
 
 class _DisplayFeedingTimePageState extends State<DisplayFeedingTimePage> {
-  TimeOfDay _selectedTime = TimeOfDay.now();
-  bool _isButtonDisabled = false;
-  int _setTimeCount = 0; // Counter to track the number of times the user has set the time
-  final DatabaseReference _setTimeReference =
-      FirebaseDatabase.instance.reference().child('setTime');
+  TextEditingController _feedingTimeController = TextEditingController();
+  String _selectedUnit = 'seconds';
+  String _currentFeedTime = 'N/A';
+  String _currentTimestamp = 'N/A';
 
   @override
   void initState() {
     super.initState();
+    _fetchCurrentFeedTime();
+  }
 
-    // Get current user UID
-    User? currentUser = FirebaseAuth.instance.currentUser;
-    String userUID = currentUser?.uid ?? "N/A";
+  void _fetchCurrentFeedTime() async {
+  DatabaseReference feedTimeReference =
+      FirebaseDatabase.instance.reference().child('feedTime');
+  DatabaseReference timestampReference =
+      FirebaseDatabase.instance.reference().child('timestampFeedTime');
 
-    // Listen for changes in the /setTime node for the current user
-    _setTimeReference.child(userUID).onValue.listen((event) {
-      DataSnapshot dataSnapshot = event.snapshot;
-      Map<dynamic, dynamic> setTimeData =
-          (dataSnapshot.value as Map<dynamic, dynamic>);
+  try {
+    DatabaseEvent feedTimeEvent = await feedTimeReference.once();
+    DataSnapshot feedTimeSnapshot = feedTimeEvent.snapshot;
 
-      // Update the counter based on the number of entries for the user
-      _setTimeCount = setTimeData.length;
+    DatabaseEvent timestampEvent = await timestampReference.once();
+    DataSnapshot timestampSnapshot = timestampEvent.snapshot;
 
-      // Check if the user has set the time three times
-      if (_setTimeCount >= 3) {
-        setState(() {
-          _isButtonDisabled = true;
-        });
-      } else {
-        setState(() {
-          _isButtonDisabled = false;
-        });
-      }
-    });
+    // Check if feedTimeSnapshot has a value
+    if (feedTimeSnapshot.value != null) {
+      int feedTime = feedTimeSnapshot.value as int;
+
+      setState(() {
+        _currentFeedTime = '$feedTime milliseconds';
+      });
+    } else {
+      print('Error: No value found at /feedTime');
+    }
+
+    // Check if timestampSnapshot has a value
+    if (timestampSnapshot.value != null) {
+      String timestamp = timestampSnapshot.value as String;
+
+      setState(() {
+        _currentTimestamp = timestamp;
+      });
+    } else {
+      print('Error: No value found at /timestampFeedTime');
+    }
+  } catch (e) {
+    print('Error fetching feed time: $e');
+  }
+}
+  void _writeTimestampToDatabase(String timestamp) {
+    // Your logic to write timestamp to Firebase Realtime Database
+    DatabaseReference timestampReference =
+        FirebaseDatabase.instance.reference().child('timestampFeedTime');
+    timestampReference.set(timestamp);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Display Feeding Time Page'),
+        title: Text('Feeding Interval Time'),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ElevatedButton(
-              onPressed: _isButtonDisabled ? null : _setFeedingTime,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.lightBlue,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: Text('Set Feeding Time'),
-            ),
-            if (_isButtonDisabled)
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  'You have already set feeding time three times. To set a new time, please remove any existing times.',
-                  style: TextStyle(
-                    color: Colors.red,
-                    fontStyle: FontStyle.italic,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 120,
+                  child: TextField(
+                    controller: _feedingTimeController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      labelText: 'Time',
+                    ),
                   ),
                 ),
-              ),
-            SizedBox(height: 20),
-            StreamBuilder(
-              stream: Stream.periodic(Duration(seconds: 1), (i) => i),
-              builder: (context, snapshot) {
-                return Text(
-                  'Current Time: ${DateFormat('HH:mm:ss').format(DateTime.now())}',
-                  style: TextStyle(fontSize: 18),
-                );
-              },
+                SizedBox(width: 20),
+                DropdownButton<String>(
+                  value: _selectedUnit,
+                  items: ['seconds', 'minutes', 'hours']
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  onChanged: (String? value) {
+                    setState(() {
+                      _selectedUnit = value ?? 'seconds';
+                    });
+                  },
+                ),
+              ],
             ),
+            SizedBox(height: 20),
+            ElevatedButton(
+  onPressed: () => _setFeedingTime(),
+  style: ElevatedButton.styleFrom(
+    backgroundColor: Colors.lightBlue,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(8),
+    ),
+  ),
+  child: Text('Set Feeding Time'),
+),
             SizedBox(height: 20),
             Text(
-              'Feeding Times:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            // Display list of feeding times
-            Expanded(
-              child: FutureBuilder(
-                future: _getFeedingTimes(),
-                builder: (context, AsyncSnapshot<List<String>> snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return CircularProgressIndicator();
-                  } else if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
-                  } else {
-                    List<String> feedingTimes = snapshot.data ?? [];
-                    if (feedingTimes.contains("No time has been selected")) {
-                      // Display a message when no time has been selected
-                      return Center(
-                        child: Text("No time has been selected"),
-                      );
-                    } else {
-                      // Display the list of feeding times with edit and delete buttons
-                      return ListView.builder(
-                        itemCount: feedingTimes.length,
-                        itemBuilder: (context, index) {
-                          return ListTile(
-                            title: Text(feedingTimes[index]),
-                            trailing: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                IconButton(
-                                  icon: Icon(Icons.edit),
-                                  onPressed: () => _editFeedingTime(index),
-                                ),
-                                IconButton(
-                                  icon: Icon(Icons.delete),
-                                  onPressed: () => _deleteFeedingTime(index),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      );
-                    }
-                  }
-                },
-              ),
+              'Current set interval time is $_currentFeedTime at $_currentTimestamp',
+              style: TextStyle(fontSize: 16),
             ),
           ],
         ),
@@ -143,118 +128,86 @@ class _DisplayFeedingTimePageState extends State<DisplayFeedingTimePage> {
     );
   }
 
+  void _setFeedingTime() {
+  // Get the entered feeding time
+  int feedingTime;
+  try {
+    feedingTime = int.parse(_feedingTimeController.text);
+  } catch (e) {
+    // Handle invalid input
+    print('Invalid input. Please enter a valid integer.');
+    return;
+  }
 
-
- Future<List<String>> _getFeedingTimes() async {
-  User? currentUser = FirebaseAuth.instance.currentUser;
-  String userUID = currentUser?.uid ?? "N/A";
-
-  DataSnapshot dataSnapshot = (await _setTimeReference.child(userUID).once()).snapshot;
-
-  Map<dynamic, dynamic>? setTimeData = dataSnapshot.value as Map<dynamic, dynamic>?;
-
-  List<String> feedingTimes = [];
-
-  if (setTimeData != null && setTimeData.isNotEmpty) {
-    setTimeData.forEach((key, value) {
-      feedingTimes.add(value['selectedTime']);
-    });
+  // Convert the feeding time to milliseconds based on the selected unit
+  if (_selectedUnit == 'minutes') {
+    feedingTime *= 60 * 1000; // Convert to milliseconds
+  } else if (_selectedUnit == 'hours') {
+    feedingTime *= 3600 * 1000; // Convert to milliseconds
   } else {
-    // If no data is available, return a list with a placeholder text
-    feedingTimes = ["No time has been selected"];
+    feedingTime *= 1000; // Convert to milliseconds (default: seconds)
   }
 
-  return feedingTimes;
+  // Show confirmation dialog before writing to the database
+  _showConfirmationDialog(feedingTime);
 }
 
-  Future<void> _setFeedingTime() async {
-  TimeOfDay? pickedTime = await showTimePicker(
-    context: context,
-    initialTime: _selectedTime,
-  );
+  void _showConfirmationDialog(int feedingTime) {
+    // Your confirmation dialog logic goes here
+    // For example, you can use the showDialog method to display a dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirmation'),
+          content: Text(
+              'Are you sure to set feeding time to ${_feedingTimeController.text} $_selectedUnit?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                // Your logic to write to Firebase Realtime Database
+                _writeToDatabase(feedingTime);
 
-  if (pickedTime != null) {
-    setState(() {
-      _selectedTime = pickedTime;
-      _isButtonDisabled = true;
-    });
+                // Optional: Reset the text field
+                _feedingTimeController.clear();
 
-    // Get current user UID
-    User? currentUser = FirebaseAuth.instance.currentUser;
-    String userUID = currentUser?.uid ?? "N/A";
+                // Close the dialog
+                Navigator.of(context).pop();
+              },
+              child: Text('Yes'),
+            ),
+            TextButton(
+              onPressed: () {
+                // Close the dialog
+                Navigator.of(context).pop();
+              },
+              child: Text('No'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
-    // Format the selected time with leading zeros
-    String formattedTime =
-        '${_selectedTime.hour.toString().padLeft(2, '0')}:${_selectedTime.minute.toString().padLeft(2, '0')}';
+ void _writeToDatabase(int feedingTime) async {
+  try {
+    // Your logic to write to Firebase Realtime Database
+    DatabaseReference feedTimeReference =
+        FirebaseDatabase.instance.reference().child('feedTime');
+    DatabaseReference timestampReference =
+        FirebaseDatabase.instance.reference().child('timestampFeedTime');
 
-    // Write selected time and user UID to Firebase Realtime Database (setTime node)
-    _setTimeReference.child(userUID).push().set({
-      'selectedTime': formattedTime,
-      'userUID': userUID,
-    });
+    // Get the current timestamp as a string
+    String timestamp = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
+
+    // Write feeding time and timestamp to their respective nodes
+    await feedTimeReference.set(feedingTime);
+    await timestampReference.set(timestamp);
+
+    // Update current set interval time and timestamp
+    _fetchCurrentFeedTime(); // Remove the 'await' here
+  } catch (e) {
+    print('Error writing to the database: $e');
   }
 }
-
-void _editFeedingTime(int index) async {
-  User? currentUser = FirebaseAuth.instance.currentUser;
-  String userUID = currentUser?.uid ?? "N/A";
-
-  // Fetch the feeding times
-  List<String> feedingTimes = await _getFeedingTimes();
-
-  // Display a dialog to allow the user to edit the selected time
-  TimeOfDay? editedTime = await showTimePicker(
-    context: context,
-    initialTime: TimeOfDay(
-      hour: int.parse(feedingTimes[index].split(':')[0]),
-      minute: int.parse(feedingTimes[index].split(':')[1]),
-    ),
-  );
-
-  if (editedTime != null) {
-    // Format the edited time with leading zeros
-    String formattedEditedTime =
-        '${editedTime.hour.toString().padLeft(2, '0')}:${editedTime.minute.toString().padLeft(2, '0')}';
-
-    // Update the feeding time in the database
-    _setTimeReference
-        .child(userUID)
-        .orderByChild('selectedTime')
-        .equalTo(feedingTimes[index])
-        .onValue
-        .listen((event) {
-      Map<dynamic, dynamic>? values = (event.snapshot.value as Map<dynamic, dynamic>?) ?? {};
-      String key = values.keys.first ?? "";
-
-      _setTimeReference.child(userUID).child(key).update({
-        'selectedTime': formattedEditedTime,
-      });
-    });
-  }
-}
-
-
-void _deleteFeedingTime(int index) async {
-  User? currentUser = FirebaseAuth.instance.currentUser;
-  String userUID = currentUser?.uid ?? "N/A";
-
-  // Fetch the feeding times
-  List<String> feedingTimes = await _getFeedingTimes();
-
-  // Find the corresponding key in the database
-  _setTimeReference
-      .child(userUID)
-      .orderByChild('selectedTime')
-      .equalTo(feedingTimes[index])
-      .onValue
-      .listen((event) {
-    Map<dynamic, dynamic>? values = (event.snapshot.value as Map<dynamic, dynamic>?) ?? {};
-    String key = values.keys.first ?? "";
-
-    // Delete the feeding time from the database
-    _setTimeReference.child(userUID).child(key).remove();
-  });
-}
-
-
 }

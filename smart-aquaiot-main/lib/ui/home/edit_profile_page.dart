@@ -4,7 +4,6 @@ import 'package:flutter_login_screen/ui/auth/authentication_bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_login_screen/model/user.dart' as LocalUser;
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_login_screen/ui/auth/login/login_screen.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:io';
@@ -198,7 +197,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
                     final userDetails = snapshot.data;
 
-                    final profilePicURL = userDetails?.profilePicURL;
 
                     return Column(
                       children: [

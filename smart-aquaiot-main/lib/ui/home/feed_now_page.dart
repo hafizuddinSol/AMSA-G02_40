@@ -10,8 +10,6 @@ class FeedNowPage extends StatefulWidget {
 }
 
 class _FeedNowPageState extends State<FeedNowPage> {
-  final DatabaseReference _rootReference =
-      FirebaseDatabase.instance.ref();
   final DatabaseReference _feedFishReference;
   final DatabaseReference _timestampReference;
 
@@ -33,7 +31,7 @@ class _FeedNowPageState extends State<FeedNowPage> {
     // Add a listener to update log messages when data changes in the database
     _timestampReference.onChildAdded.listen((event) {
       DataSnapshot dataSnapshot = event.snapshot;
-      Map<dynamic, dynamic> logData = (dataSnapshot.value as Map<dynamic, dynamic>) ?? {};
+      Map<dynamic, dynamic> logData = (dataSnapshot.value as Map<dynamic, dynamic>);
       User? currentUser = FirebaseAuth.instance.currentUser;
       String userUID = currentUser?.uid ?? "N/A";
 
