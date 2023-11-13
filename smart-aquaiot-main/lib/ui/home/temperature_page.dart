@@ -95,6 +95,7 @@ class _TemperaturePageState extends State<TemperaturePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              SizedBox(height: 40), // Adjusted the height
               Align(
                 alignment: Alignment.center,
                 child: Text(
@@ -116,7 +117,7 @@ class _TemperaturePageState extends State<TemperaturePage> {
                   ],
                 ),
               ),
-              SizedBox(height: 20), // Adjusted the height
+              SizedBox(height: 50), // Adjusted the height
               Container(
                 height: 300, // Adjust the height as needed
                 child: ListView.builder(

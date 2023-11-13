@@ -110,7 +110,10 @@ class _WaterLevelPageState extends State<WaterLevelPage> {
                   itemCount: waterLevelHistory.length,
                   itemBuilder: (context, index) {
                     return ListTile(
-                      title: Text(waterLevelHistory[index]),
+                      title: Text(
+                        waterLevelHistory[index],
+                        textAlign: TextAlign.center,
+                      ),
                     );
                   },
                 ),

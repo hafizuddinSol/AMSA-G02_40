@@ -100,15 +100,15 @@ class _SignUpState extends State<SignUpScreen> {
                 elevation: 0.0,
                 backgroundColor: Colors.transparent,
                 iconTheme: IconThemeData(
-                    color: isDarkMode(context) ? Colors.white : Colors.black),
+                  color: isDarkMode(context) ? Colors.white : Colors.black,
+                ),
               ),
               body: Center(
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.only(
                     left: 16.0,
                     right: 16,
-                    top:
-                        50, // Adjust this value for the desired vertical position
+                    top: 50,
                     bottom: 16,
                   ),
                   child: BlocBuilder<SignUpBloc, SignUpState>(
@@ -118,254 +118,244 @@ class _SignUpState extends State<SignUpScreen> {
                       if (state is SignUpFailureState) {
                         _validate = AutovalidateMode.onUserInteraction;
                       }
-                      return Form(
-                        key: _key,
-                        autovalidateMode: _validate,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            const Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                'Create new account',
-                                style: TextStyle(
-                                    color: Color.fromARGB(255, 162, 217, 253),
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 25.0),
-                              ),
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'Create new account',
+                              style: TextStyle(
+                                  color: Color.fromARGB(255, 162, 217, 253),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 25.0),
                             ),
-                            SizedBox(height: 26.0),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 16.0, right: 8.0, left: 8.0),
-                              child: TextFormField(
-                                textCapitalization: TextCapitalization.words,
-                                validator: validateName,
-                                onSaved: (String? val) {
-                                  firstName = val;
-                                },
-                                textInputAction: TextInputAction.next,
-                                decoration: getInputDecoration(
-                                    hint: 'First Name',
-                                    darkMode: isDarkMode(context),
-                                    errorColor: Theme.of(context).errorColor),
-                              ),
+                          ),
+                          SizedBox(height: 26.0),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                top: 16.0, right: 8.0, left: 8.0),
+                            child: TextFormField(
+                              textCapitalization: TextCapitalization.words,
+                              validator: validateName,
+                              onSaved: (String? val) {
+                                firstName = val;
+                              },
+                              textInputAction: TextInputAction.next,
+                              decoration: getInputDecoration(
+                                  hint: 'First Name',
+                                  darkMode: isDarkMode(context),
+                                  errorColor: Theme.of(context).errorColor),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 16.0, right: 8.0, left: 8.0),
-                              child: TextFormField(
-                                textCapitalization: TextCapitalization.words,
-                                validator: validateName,
-                                onSaved: (String? val) {
-                                  lastName = val;
-                                },
-                                textInputAction: TextInputAction.next,
-                                decoration: getInputDecoration(
-                                    hint: 'Last Name',
-                                    darkMode: isDarkMode(context),
-                                    errorColor: Theme.of(context).errorColor),
-                              ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                top: 16.0, right: 8.0, left: 8.0),
+                            child: TextFormField(
+                              textCapitalization: TextCapitalization.words,
+                              validator: validateName,
+                              onSaved: (String? val) {
+                                lastName = val;
+                              },
+                              textInputAction: TextInputAction.next,
+                              decoration: getInputDecoration(
+                                  hint: 'Last Name',
+                                  darkMode: isDarkMode(context),
+                                  errorColor: Theme.of(context).errorColor),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 16.0, right: 8.0, left: 8.0),
-                              child: TextFormField(
-                                keyboardType: TextInputType.emailAddress,
-                                textInputAction: TextInputAction.next,
-                                validator: validateEmail,
-                                onSaved: (String? val) {
-                                  email = val;
-                                },
-                                decoration: getInputDecoration(
-                                    hint: 'Email',
-                                    darkMode: isDarkMode(context),
-                                    errorColor: Theme.of(context).errorColor),
-                              ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                top: 16.0, right: 8.0, left: 8.0),
+                            child: TextFormField(
+                              keyboardType: TextInputType.emailAddress,
+                              textInputAction: TextInputAction.next,
+                              validator: validateEmail,
+                              onSaved: (String? val) {
+                                email = val;
+                              },
+                              decoration: getInputDecoration(
+                                  hint: 'Email',
+                                  darkMode: isDarkMode(context),
+                                  errorColor: Theme.of(context).errorColor),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 16.0, right: 8.0, left: 8.0),
-                              child: TextFormField(
-                                obscureText: true,
-                                textInputAction: TextInputAction.next,
-                                controller: _passwordController,
-                                validator: validatePassword, // Validate password
-                                onSaved: (String? val) {
-                                  password = val;
-                                },
-                                style: const TextStyle(
-                                    height: 0.8, fontSize: 18.0),
-                                cursorColor: const Color(colorPrimary),
-                                decoration: getInputDecoration(
-                                    hint: 'Password',
-                                    darkMode: isDarkMode(context),
-                                    errorColor: Theme.of(context).errorColor),
-                              ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                top: 16.0, right: 8.0, left: 8.0),
+                            child: TextFormField(
+                              obscureText: true,
+                              textInputAction: TextInputAction.next,
+                              controller: _passwordController,
+                              validator: validatePassword,
+                              onSaved: (String? val) {
+                                password = val;
+                              },
+                              style:
+                                  const TextStyle(height: 0.8, fontSize: 18.0),
+                              cursorColor: const Color(colorPrimary),
+                              decoration: getInputDecoration(
+                                  hint: 'Password',
+                                  darkMode: isDarkMode(context),
+                                  errorColor: Theme.of(context).errorColor),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 16.0, right: 8.0, left: 8.0),
-                              child: TextFormField(
-                                textInputAction: TextInputAction.done,
-                                onFieldSubmitted: (_) =>
-                                    context.read<SignUpBloc>().add(
-                                          ValidateFieldsEvent(_key,
-                                              acceptEula: acceptEULA),
-                                        ),
-                                obscureText: true,
-                                validator: (val) => validateConfirmPassword(
-                                    _passwordController.text, val),
-                                onSaved: (String? val) {
-                                  confirmPassword = val;
-                                },
-                                style: const TextStyle(
-                                    height: 0.8, fontSize: 18.0),
-                                cursorColor: const Color(colorPrimary),
-                                decoration: getInputDecoration(
-                                    hint: 'Confirm Password',
-                                    darkMode: isDarkMode(context),
-                                    errorColor: Theme.of(context).errorColor),
-                              ),
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment
-                                  .start, // Aligns children to the start (left)
-                              children: [
-                                Text(
-                                  '________________________________________________',
-                                  style: TextStyle(
-                                    fontSize: 13.5,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                                Text(
-                                  'Password must contain the following: ',
-                                  style: TextStyle(
-                                    fontSize: 14.5,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                                Text(
-                                  '- Minimum 6 characters',
-                                  style: TextStyle(
-                                    fontSize: 13.5,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                                Text(
-                                  '- A Number',
-                                  style: TextStyle(
-                                    fontSize: 13.5,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                                Text(
-                                  '- A capital (uppercase) letter',
-                                  style: TextStyle(
-                                    fontSize: 13.5,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                                height:
-                                    20), // Add some space between the text and the button
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                right: 40.0,
-                                left: 40.0,
-                                bottom: 20.0,
-                              ),
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  fixedSize: Size.fromWidth(
-                                      MediaQuery.of(context).size.width / 1.5),
-                                  backgroundColor:
-                                      Color.fromARGB(255, 162, 217, 253),
-                                  padding: const EdgeInsets.only(
-                                      top: 16, bottom: 16),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(25.0),
-                                    side: const BorderSide(
-                                      color: Color.fromARGB(255, 162, 217, 253),
-                                    ),
-                                  ),
-                                ),
-                                child: const Text(
-                                  'Sign Up',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                onPressed: () async {
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                top: 16.0, right: 8.0, left: 8.0),
+                            child: TextFormField(
+                              textInputAction: TextInputAction.done,
+                              onFieldSubmitted: (_) =>
                                   context.read<SignUpBloc>().add(
                                         ValidateFieldsEvent(_key,
                                             acceptEula: acceptEULA),
-                                      );
-                                  // After successful validation, SignUpBloc will handle registration.
-                                  // No need to manually send verification email here.
-                                },
-                              ),
-                            ),
-                            SizedBox(
-                                height:
-                                    24), // Add some space between the button and the Terms of Use
-                            ListTile(
-                              trailing: BlocBuilder<SignUpBloc, SignUpState>(
-                                buildWhen: (old, current) =>
-                                    current is EulaToggleState &&
-                                    old != current,
-                                builder: (context, state) {
-                                  if (state is EulaToggleState) {
-                                    acceptEULA = state.eulaAccepted;
-                                  }
-                                  return Checkbox(
-                                    onChanged: (value) =>
-                                        context.read<SignUpBloc>().add(
-                                              ToggleEulaCheckboxEvent(
-                                                eulaAccepted: value!,
-                                              ),
-                                            ),
-                                    activeColor:
-                                        Color.fromARGB(255, 162, 217, 253),
-                                    value: acceptEULA,
-                                  );
-                                },
-                              ),
-                              title: RichText(
-                                textAlign: TextAlign.left,
-                                text: TextSpan(
-                                  children: [
-                                    const TextSpan(
-                                      text:
-                                          'By creating an account you agree to our ',
-                                      style: TextStyle(color: Colors.grey),
-                                    ),
-                                    TextSpan(
-                                      style: const TextStyle(
-                                        color: Colors.blueAccent,
                                       ),
-                                      text: 'Terms of Use',
-                                      recognizer: TapGestureRecognizer()
-                                        ..onTap = () async {
-                                          if (await canLaunchUrl(
-                                              Uri.parse(eula))) {
-                                            await launchUrl(
-                                              Uri.parse(eula),
-                                            );
-                                          }
-                                        },
-                                    ),
-                                  ],
+                              obscureText: true,
+                              validator: (val) => validateConfirmPassword(
+                                  _passwordController.text, val),
+                              onSaved: (String? val) {
+                                confirmPassword = val;
+                              },
+                              style:
+                                  const TextStyle(height: 0.8, fontSize: 18.0),
+                              cursorColor: const Color(colorPrimary),
+                              decoration: getInputDecoration(
+                                  hint: 'Confirm Password',
+                                  darkMode: isDarkMode(context),
+                                  errorColor: Theme.of(context).errorColor),
+                            ),
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '________________________________________________',
+                                style: TextStyle(
+                                  fontSize: 13.5,
+                                  color: Colors.grey,
                                 ),
                               ),
+                              Text(
+                                'Password must contain the following: ',
+                                style: TextStyle(
+                                  fontSize: 14.5,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              Text(
+                                '- Minimum 6 characters',
+                                style: TextStyle(
+                                  fontSize: 13.5,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              Text(
+                                '- A Number',
+                                style: TextStyle(
+                                  fontSize: 13.5,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              Text(
+                                '- A capital (uppercase) letter',
+                                style: TextStyle(
+                                  fontSize: 13.5,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 20),
+                          ListTile(
+                            trailing: BlocBuilder<SignUpBloc, SignUpState>(
+                              buildWhen: (old, current) =>
+                                  current is EulaToggleState && old != current,
+                              builder: (context, state) {
+                                if (state is EulaToggleState) {
+                                  acceptEULA = state.eulaAccepted;
+                                }
+                                return Checkbox(
+                                  onChanged: (value) =>
+                                      context.read<SignUpBloc>().add(
+                                            ToggleEulaCheckboxEvent(
+                                              eulaAccepted: value!,
+                                            ),
+                                          ),
+                                  activeColor:
+                                      Color.fromARGB(255, 162, 217, 253),
+                                  value: acceptEULA,
+                                );
+                              },
                             ),
-                          ],
-                        ),
+                            title: RichText(
+                              textAlign: TextAlign.left,
+                              text: TextSpan(
+                                children: [
+                                  const TextSpan(
+                                    text:
+                                        'By creating an account you agree to our ',
+                                    style: TextStyle(color: Colors.grey),
+                                  ),
+                                  TextSpan(
+                                    style: const TextStyle(
+                                      color: Colors.blueAccent,
+                                    ),
+                                    text: 'Terms of Use',
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () async {
+                                        if (await canLaunchUrl(
+                                            Uri.parse(eula))) {
+                                          await launchUrl(
+                                            Uri.parse(eula),
+                                          );
+                                        }
+                                      },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 24),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              right: 40.0,
+                              left: 40.0,
+                              bottom: 20.0,
+                            ),
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                fixedSize: Size.fromWidth(
+                                    MediaQuery.of(context).size.width / 1.5),
+                                backgroundColor:
+                                    Color.fromARGB(255, 162, 217, 253),
+                                padding:
+                                    const EdgeInsets.only(top: 16, bottom: 16),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(25.0),
+                                  side: const BorderSide(
+                                    color: Color.fromARGB(255, 162, 217, 253),
+                                  ),
+                                ),
+                              ),
+                              child: const Text(
+                                'Sign Up',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              onPressed: () async {
+                                context.read<SignUpBloc>().add(
+                                      ValidateFieldsEvent(_key,
+                                          acceptEula: acceptEULA),
+                                    );
+                                // After successful validation, SignUpBloc will handle registration.
+                                // No need to manually send verification email here.
+                              },
+                            ),
+                          ),
+                        ],
                       );
                     },
                   ),

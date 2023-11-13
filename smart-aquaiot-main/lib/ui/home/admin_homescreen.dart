@@ -4,6 +4,7 @@ import 'package:flutter_login_screen/model/user.dart';
 import 'package:flutter_login_screen/services/helper.dart';
 import 'package:flutter_login_screen/ui/auth/authentication_bloc.dart';
 import 'package:flutter_login_screen/ui/auth/welcome/welcome_screen.dart';
+import 'package:flutter_login_screen/ui/home/feed_now_page.dart';
 import 'edit_profile_page.dart';
 import 'temperature_page.dart';
 import 'water_level_page.dart';
@@ -32,6 +33,21 @@ class AdminHomeScreen extends StatefulWidget {
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
+
+  void feedFish(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        Future.delayed(Duration(seconds: 3), () {
+          Navigator.of(context).pop();
+        });
+        return AlertDialog(
+          title: Text('Feeding Complete'),
+          content: Text('You just fed your fish! Very Good!'),
+        );
+      },
+    );
+  }
 }
 
 class _HomeScreenState extends State<AdminHomeScreen> {
@@ -126,7 +142,7 @@ class _HomeScreenState extends State<AdminHomeScreen> {
                     children: [
                       Expanded(
                         child: SizedBox(
-                          height: 60,
+                          height: 170,
                           child: ElevatedButton(
                             onPressed: () {
                               Navigator.push(
@@ -151,7 +167,7 @@ class _HomeScreenState extends State<AdminHomeScreen> {
                       SizedBox(width: 8),
                       Expanded(
                         child: SizedBox(
-                          height: 60,
+                          height: 170,
                           child: ElevatedButton(
                             onPressed: () {
                               Navigator.push(
@@ -180,11 +196,16 @@ class _HomeScreenState extends State<AdminHomeScreen> {
                     children: [
                       Expanded(
                         child: SizedBox(
-                          height: 80,
+                          height: 170,
                           child: ElevatedButton(
                             onPressed: () {
-                              feedFish(
-                                  context); // Call the feedFish function here
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      FeedNowPage(), // Replace with the actual name of your feed_now_page.dart
+                                ),
+                              );
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.lightBlue,
@@ -199,7 +220,7 @@ class _HomeScreenState extends State<AdminHomeScreen> {
                       SizedBox(width: 8),
                       Expanded(
                         child: SizedBox(
-                          height: 80,
+                          height: 170,
                           child: ElevatedButton(
                             onPressed: () {
                               Navigator.push(

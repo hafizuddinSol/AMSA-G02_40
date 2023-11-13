@@ -178,7 +178,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       Expanded(
                         child: SizedBox(
                           height:
-                              80, // Increase the height to make the button taller
+                              170, // Increase the height to make the button taller
                           child: ElevatedButton(
                             onPressed: () {
                               Navigator.push(
@@ -204,7 +204,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       Expanded(
                         child: SizedBox(
                           height:
-                              80, // Increase the height to make the button taller
+                              170, // Increase the height to make the button taller
                           child: ElevatedButton(
                             onPressed: () {
                               Navigator.push(
@@ -233,16 +233,17 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       Expanded(
                         child: SizedBox(
-                          height: 80,
+                          height: 170,
                           child: ElevatedButton(
-                           onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => FeedNowPage(), // Replace with the actual name of your feed_now_page.dart
-                ),
-              );
-            },
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      FeedNowPage(), // Replace with the actual name of your feed_now_page.dart
+                                ),
+                              );
+                            },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.lightBlue,
                               shape: RoundedRectangleBorder(
@@ -257,7 +258,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       Expanded(
                         child: SizedBox(
                           height:
-                              80, // Increase the height to make the button taller
+                              170, // Increase the height to make the button taller
                           child: ElevatedButton(
                             onPressed: () {
                               Navigator.push(
@@ -279,7 +280,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 8), // Added gap
+                  SizedBox(height: 30), // Added gap
                   SizedBox(
                     height: 80, // Increase the height to make the button taller
                     child: ElevatedButton(

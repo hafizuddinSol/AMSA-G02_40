@@ -17,8 +17,7 @@ class _FeedNowPageState extends State<FeedNowPage> {
   List<String> _logMessages = [];
 
   _FeedNowPageState()
-      : _feedFishReference =
-            FirebaseDatabase.instance.ref().child('feedFish'),
+      : _feedFishReference = FirebaseDatabase.instance.ref().child('feedFish'),
         _timestampReference = FirebaseDatabase.instance
             .ref()
             .child('timestamp')
@@ -31,13 +30,15 @@ class _FeedNowPageState extends State<FeedNowPage> {
     // Add a listener to update log messages when data changes in the database
     _timestampReference.onChildAdded.listen((event) {
       DataSnapshot dataSnapshot = event.snapshot;
-      Map<dynamic, dynamic> logData = (dataSnapshot.value as Map<dynamic, dynamic>);
+      Map<dynamic, dynamic> logData =
+          (dataSnapshot.value as Map<dynamic, dynamic>);
       User? currentUser = FirebaseAuth.instance.currentUser;
       String userUID = currentUser?.uid ?? "N/A";
 
       // Only display/load timestamp for the current logged-in UserUID
       if (logData['userUID'] == userUID) {
-        String logMessage = 'Feed Fish Button Pressed - ${logData['timestamp']}';
+        String logMessage =
+            'Feed Fish Button Pressed - ${logData['timestamp']}';
         _addLogMessage(logMessage);
       }
     });
@@ -53,7 +54,7 @@ class _FeedNowPageState extends State<FeedNowPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(height: 50), // Adjust the height based on your preference
+            SizedBox(height: 100), // Adjust the height based on your preference
             ElevatedButton(
               onPressed: _isButtonDisabled ? null : _feedFish,
               style: ElevatedButton.styleFrom(
@@ -61,17 +62,21 @@ class _FeedNowPageState extends State<FeedNowPage> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
+                minimumSize: Size(200, 100), // Adjust button size
               ),
               child: Text('Feed Now'),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 50),
             // Display log messages using ListView.builder
             Expanded(
               child: ListView.builder(
                 itemCount: _logMessages.length,
                 itemBuilder: (context, index) {
                   return ListTile(
-                    title: Text(_logMessages[index]),
+                    title: Text(
+                      _logMessages[index],
+                      textAlign: TextAlign.center,
+                    ),
                   );
                 },
               ),
